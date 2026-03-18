@@ -1,5 +1,5 @@
 import type { NodeWithPosition, ChartDimensions } from '@/data/types'
-import { bezierPathReverse, getTop5, nodeColor } from '@/lib/chartMath'
+import { bezierPathReverse, getContrastPairs, nodeColor } from '@/lib/chartMath'
 
 /**
  * Particles flow orange → green, color-morphing from source to destination:
@@ -29,36 +29,23 @@ export function ParticleLayer({ nodes, dims, pinnedNode }: Props) {
   if (!pinnedNode) return null
 
   const posMap = new Map(nodes.map(n => [n.raumbezug, n]))
-  const pinned  = posMap.get(pinnedNode)
+  const pinned = posMap.get(pinnedNode)
   if (!pinned) return null
 
-  const { top5zuzug, top5wegzug } = getTop5(nodes)
+  const contrastPairs = getContrastPairs(nodes, pinnedNode)
   const lanes: FlowLane[] = []
 
-  if (pinned.indikatorwert >= 0) {
-    // Green node pinned: particles flow FROM each orange partner → green
-    for (const w of top5wegzug) {
-      const pOrange = posMap.get(w.raumbezug)
-      if (!pOrange) continue
-      lanes.push({
-        key: `${pinnedNode}←${w.raumbezug}`,
-        d: bezierPathReverse(pinned, pOrange, dims),
-        sourceColor: nodeColor(w.indikatorwert),   // orange shade
-        destColor:   nodeColor(pinned.indikatorwert), // green shade
-      })
-    }
-  } else {
-    // Orange node pinned: particles flow FROM orange → each green partner
-    for (const z of top5zuzug) {
-      const pGreen = posMap.get(z.raumbezug)
-      if (!pGreen) continue
-      lanes.push({
-        key: `${pinnedNode}→${z.raumbezug}`,
-        d: bezierPathReverse(pGreen, pinned, dims),
-        sourceColor: nodeColor(pinned.indikatorwert), // orange shade
-        destColor:   nodeColor(z.indikatorwert),      // green shade
-      })
-    }
+  for (const pair of contrastPairs) {
+    const positive = posMap.get(pair.positive.raumbezug)
+    const negative = posMap.get(pair.negative.raumbezug)
+    if (!positive || !negative) continue
+
+    lanes.push({
+      key: `${pair.positive.raumbezug}←${pair.negative.raumbezug}`,
+      d: bezierPathReverse(positive, negative, dims),
+      sourceColor: nodeColor(negative.indikatorwert),
+      destColor: nodeColor(positive.indikatorwert),
+    })
   }
 
   return (
@@ -67,7 +54,7 @@ export function ParticleLayer({ nodes, dims, pinnedNode }: Props) {
         Array.from({ length: PARTICLES }, (_, i) => {
           const delay = (i / PARTICLES) * DURATION
           // source → white midpoint → dest, synced with opacity fade
-          const fillValues = `${lane.sourceColor};#ffffff;${lane.destColor}`
+          const fillValues = `${lane.sourceColor};var(--color-particle-mid);${lane.destColor}`
           return (
             <circle
               key={`${lane.key}-${i}`}

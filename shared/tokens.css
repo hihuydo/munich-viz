@@ -1,0 +1,66 @@
+:root {
+  color-scheme: light;
+
+  /* Backgrounds */
+  --bg-primary: #f3f4f6;
+  --bg-primary-rgb: 243, 244, 246;
+  --bg-ambient-rgb: 226, 229, 235;
+  --bg-card: #ffffff;
+  --bg-card-rgb: 255, 255, 255;
+  --bg-subtle: #ebeef2;
+  --bg-elevated: #eef1f4;
+
+  /* Borders */
+  --border-base: #d3d9e0;
+  --border-muted: #e3e7ec;
+  --border-soft: #d9dfe6;
+  --border-quiet: #e1e6eb;
+  --border-strong: #c7d0da;
+
+  /* Text */
+  --text-strong: #1d2730;
+  --text-primary: #34424d;
+  --text-secondary: #61717f;
+  --text-soft: #748391;
+  --text-muted: #8c99a5;
+  --text-faint: #7e8e9c;
+  --text-contrast: #24313a;
+  --text-inverse: #ffffff;
+
+  /* Accent / data colors */
+  --accent-green: #41995f;
+  --accent-green-rgb: 65, 153, 95;
+  --accent-green-soft: #5cad73;
+  --accent-green-tint: #cfe8d4;
+  --accent-orange: #cf7a38;
+  --accent-orange-rgb: 207, 122, 56;
+  --accent-orange-soft: #d98e54;
+  --accent-orange-tint: #f1d6c1;
+  --accent-blue: #4b91ca;
+  --accent-neutral: #a8b7af;
+  --accent-white: #ffffff;
+
+  /* Semantic aliases */
+  --color-positive-strong: var(--accent-green);
+  --color-positive-soft: var(--accent-green-soft);
+  --color-negative-strong: var(--accent-orange);
+  --color-negative-soft: var(--accent-orange-soft);
+  --color-neutral: var(--accent-neutral);
+  --color-chart-line: rgba(93, 106, 122, 0.34);
+  --color-glow-green: rgba(65, 153, 95, 0.38);
+  --color-shadow-card: rgba(77, 89, 107, 0.12);
+  --color-focus-ring: var(--accent-blue);
+  --color-particle-mid: var(--accent-white);
+
+  /* Typography */
+  --font-serif: "Inter", "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+  /* Radius */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  /* Transitions */
+  --transition-base: 0.2s ease;
+}

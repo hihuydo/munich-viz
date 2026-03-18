@@ -16,13 +16,26 @@ interface Props {
   globalMax: number
   jahr: number
   phase: IntroPhase
+  hoveredNode: string | null
+  pinnedNode: string | null
+  onHoverChange: (raumbezug: string | null) => void
+  onPinChange: (raumbezug: string | null) => void
+  reducedMotion: boolean
 }
 
-export function RadialChart({ records, globalMax, jahr, phase }: Props) {
+export function RadialChart({
+  records,
+  globalMax,
+  jahr,
+  phase,
+  hoveredNode,
+  pinnedNode,
+  onHoverChange,
+  onPinChange,
+  reducedMotion,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [dims, setDims] = useState<ChartDimensions | null>(null)
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null)
-  const [pinnedNode, setPinnedNode] = useState<string | null>(null)
   const [pulseNode, setPulseNode] = useState<string | null>(null)
 
   const { rScale, opScale, wScale } = useScales(globalMax)
@@ -37,7 +50,7 @@ export function RadialChart({ records, globalMax, jahr, phase }: Props) {
       Math.abs(b.indikatorwert) > Math.abs(a.indikatorwert) ? b : a,
     )
     setPulseNode(top.raumbezug)
-  }, [phase]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nodes, phase])
 
   // ResizeObserver
   useEffect(() => {
@@ -51,25 +64,24 @@ export function RadialChart({ records, globalMax, jahr, phase }: Props) {
     return () => ro.disconnect()
   }, [])
 
-  // Reset pinned node when data changes
-  useEffect(() => {
-    setPinnedNode(null)
-    setHoveredNode(null)
-  }, [records])
-
-  function handlePin(raumbezug: string) {
-    setPinnedNode(prev => {
-      if (prev === raumbezug) {
-        setHoveredNode(null)
-        return null
-      }
-      return raumbezug
-    })
+  function handlePin(raumbezug: string | null) {
+    if (raumbezug === null) {
+      onPinChange(null)
+      onHoverChange(null)
+      return
+    }
+    if (pinnedNode === raumbezug) {
+      onPinChange(null)
+      onHoverChange(null)
+      return
+    }
+    onPinChange(raumbezug)
+    onHoverChange(raumbezug)
   }
 
   function handleBackgroundClick() {
-    setPinnedNode(null)
-    setHoveredNode(null)
+    onPinChange(null)
+    onHoverChange(null)
   }
 
   const activeNodeName = pinnedNode ?? hoveredNode
@@ -86,18 +98,24 @@ export function RadialChart({ records, globalMax, jahr, phase }: Props) {
             height={dims.height}
             onClick={handleBackgroundClick}
             className="block"
+            role="img"
+            aria-label={`Radiale Binnenwanderungsvisualisierung für ${jahr}`}
           >
+            <desc>
+              Bezirke sind im Ring angeordnet. Grün steht für positive Binnenwanderung,
+              Orange für negative. Linien zeigen Kontrastpaare mit starken Unterschieden.
+            </desc>
             <GlowDefs />
             <BackgroundRings dims={dims} phase={phase} />
             <CurveLayer
               nodes={nodes}
               dims={dims}
-              globalMax={globalMax}
               opScale={opScale}
               wScale={wScale}
               phase={phase}
               hoveredNode={hoveredNode}
               pinnedNode={pinnedNode}
+              reducedMotion={reducedMotion}
             />
             <NodeRing
               nodes={nodes}
@@ -106,13 +124,13 @@ export function RadialChart({ records, globalMax, jahr, phase }: Props) {
               hoveredNode={hoveredNode}
               pinnedNode={pinnedNode}
               pulseNode={pulseNode}
-              onHover={setHoveredNode}
+              onHover={onHoverChange}
               onPin={handlePin}
             />
             <ParticleLayer
               nodes={nodes}
               dims={dims}
-              pinnedNode={pinnedNode}
+              pinnedNode={hoveredNode ?? pinnedNode}
             />
             <CenterLabel dims={dims} jahr={jahr} phase={phase} />
           </svg>

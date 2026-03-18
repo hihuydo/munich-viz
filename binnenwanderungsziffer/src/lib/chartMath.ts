@@ -30,11 +30,11 @@ export function nodePosition(
 }
 
 export function nodeColor(value: number): string {
-  if (value > 10)  return '#4ade80'
-  if (value > 0)   return '#86efac'
-  if (value === 0) return '#3a5070'
-  if (value > -10) return '#fdba74'
-  return '#fb923c'
+  if (value > 10)  return 'var(--color-positive-strong)'
+  if (value > 0)   return 'var(--color-positive-soft)'
+  if (value === 0) return 'var(--color-neutral)'
+  if (value > -10) return 'var(--color-negative-soft)'
+  return 'var(--color-negative-strong)'
 }
 
 export function bezierPath(
@@ -58,18 +58,78 @@ export function getTop5(records: BinnenwanderungRecord[]): {
   top5zuzug: BinnenwanderungRecord[]
   top5wegzug: BinnenwanderungRecord[]
 } {
-  const sorted = [...records].sort((a, b) => b.indikatorwert - a.indikatorwert)
-  const top5zuzug = sorted.filter(r => r.indikatorwert > 0).slice(0, 5)
-  const top5wegzug = sorted.filter(r => r.indikatorwert < 0).slice(-5)
+  const top5zuzug = records
+    .filter(r => r.indikatorwert > 0)
+    .sort((a, b) =>
+      b.indikatorwert - a.indikatorwert ||
+      districtNumber(a.raumbezug) - districtNumber(b.raumbezug),
+    )
+    .slice(0, 5)
+
+  const top5wegzug = records
+    .filter(r => r.indikatorwert < 0)
+    .sort((a, b) =>
+      a.indikatorwert - b.indikatorwert ||
+      districtNumber(a.raumbezug) - districtNumber(b.raumbezug),
+    )
+    .slice(0, 5)
+
   return { top5zuzug, top5wegzug }
+}
+
+export function districtNumber(name: string): number {
+  const match = name.match(/^(\d+)/)
+  return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER
+}
+
+export function districtLabel(name: string): string {
+  return name.replace(/^\d+\s+/, '')
+}
+
+export function getContrastPairs(
+  records: BinnenwanderungRecord[],
+  activeNodeName?: string | null,
+): Array<{ positive: BinnenwanderungRecord; negative: BinnenwanderungRecord }> {
+  const { top5zuzug, top5wegzug } = getTop5(records)
+
+  if (!activeNodeName) {
+    return top5zuzug
+      .slice(0, Math.min(top5zuzug.length, top5wegzug.length))
+      .map((positive, index) => ({
+        positive,
+        negative: top5wegzug[index]!,
+      }))
+  }
+
+  const activeRecord = records.find(record => record.raumbezug === activeNodeName)
+  if (!activeRecord) return []
+
+  if (activeRecord.indikatorwert >= 0) {
+    return top5wegzug.map(negative => ({
+      positive: activeRecord,
+      negative,
+    }))
+  }
+
+  return top5zuzug.map(positive => ({
+    positive,
+    negative: activeRecord,
+  }))
+}
+
+export function ringOrder(records: BinnenwanderungRecord[]): BinnenwanderungRecord[] {
+  return [...records].sort((a, b) =>
+    b.indikatorwert - a.indikatorwert ||
+    districtNumber(a.raumbezug) - districtNumber(b.raumbezug),
+  )
 }
 
 export function withPositions(
   records: BinnenwanderungRecord[],
   dims: ChartDimensions,
 ): NodeWithPosition[] {
-  const TOTAL = 25
-  const sorted = [...records].sort((a, b) => a.raumbezug.localeCompare(b.raumbezug))
+  const TOTAL = records.length || 1
+  const sorted = ringOrder(records)
   return sorted.map((d, i) => ({
     ...d,
     ...nodePosition(i, TOTAL, dims.cx, dims.cy, dims.ringR),

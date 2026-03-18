@@ -1,38 +1,37 @@
+@import "../../shared/style.css";
 @import "tailwindcss";
 
 @theme {
-  --color-background: hsl(0 0% 3.9%);
-  --color-foreground: hsl(0 0% 98%);
-  --color-border: hsl(0 0% 14.9%);
-  --color-input: hsl(0 0% 14.9%);
-  --color-ring: hsl(0 0% 83.1%);
-  --color-primary: hsl(0 0% 98%);
-  --color-primary-foreground: hsl(0 0% 9%);
-  --color-secondary: hsl(0 0% 14.9%);
-  --color-secondary-foreground: hsl(0 0% 98%);
-  --color-muted: hsl(0 0% 14.9%);
-  --color-muted-foreground: hsl(0 0% 63.9%);
-  --color-accent: hsl(0 0% 14.9%);
-  --color-accent-foreground: hsl(0 0% 98%);
-  --color-destructive: hsl(0 62.8% 30.6%);
-  --color-destructive-foreground: hsl(0 0% 98%);
-  --color-card: hsl(0 0% 3.9%);
-  --color-card-foreground: hsl(0 0% 98%);
-  --color-popover: hsl(0 0% 3.9%);
-  --color-popover-foreground: hsl(0 0% 98%);
-  --radius: 0.5rem;
-}
-
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-contrast);
+  --color-border: var(--border-base);
+  --color-input: var(--bg-subtle);
+  --color-ring: var(--accent-blue);
+  --color-primary: var(--accent-green);
+  --color-primary-foreground: var(--text-inverse);
+  --color-secondary: var(--bg-subtle);
+  --color-secondary-foreground: var(--text-primary);
+  --color-muted: var(--bg-subtle);
+  --color-muted-foreground: var(--text-secondary);
+  --color-accent: var(--bg-card);
+  --color-accent-foreground: var(--text-primary);
+  --color-destructive: var(--accent-orange);
+  --color-destructive-foreground: var(--text-inverse);
+  --color-card: var(--bg-card);
+  --color-card-foreground: var(--text-primary);
+  --color-popover: var(--bg-card);
+  --color-popover-foreground: var(--text-primary);
+  --radius: var(--radius-lg);
 }
 
 html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+
+body {
+  color: var(--text-contrast);
 }
 
 /* ── Node animations ─────────────────────────────────────── */
@@ -64,7 +63,7 @@ html, body {
 input.viz-slider {
   -webkit-appearance: none;
   height: 2px;
-  background: #0e1e30;
+  background: var(--bg-subtle);
   border-radius: 1px;
   outline: none;
 }
@@ -72,21 +71,36 @@ input.viz-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 12px; height: 12px;
   border-radius: 50%;
-  background: #4ade80;
+  background: var(--accent-green);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+  box-shadow: 0 0 8px var(--color-glow-green);
 }
 input.viz-slider::-moz-range-track {
   height: 2px;
-  background: #0e1e30;
+  background: var(--bg-subtle);
   border-radius: 1px;
   border: none;
 }
 input.viz-slider::-moz-range-thumb {
   width: 12px; height: 12px;
   border-radius: 50%;
-  background: #4ade80;
+  background: var(--accent-green);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+  box-shadow: 0 0 8px var(--color-glow-green);
   border: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 1080px) {
+  .node-inline-label {
+    display: none;
+  }
 }

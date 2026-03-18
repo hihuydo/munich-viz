@@ -20,17 +20,17 @@ export function CenterLabel({ dims, jahr, phase }: Props) {
         cx={dims.cx}
         cy={dims.cy}
         r={dims.size * 0.065}
-        fill="#0a1525"
-        stroke="#1a3050"
+        fill="var(--bg-elevated)"
+        stroke="var(--border-base)"
         strokeWidth={0.5}
       />
       <text
         x={dims.cx}
         y={dims.cy - 4}
         textAnchor="middle"
-        fill="#8aa0b8"
+        fill="var(--text-primary)"
         fontSize={dims.size * 0.035}
-        fontFamily="Georgia, serif"
+        fontFamily="var(--font-serif)"
       >
         {jahr}
       </text>
@@ -38,7 +38,7 @@ export function CenterLabel({ dims, jahr, phase }: Props) {
         x={dims.cx}
         y={dims.cy + dims.size * 0.025}
         textAnchor="middle"
-        fill="#2a4060"
+        fill="var(--text-muted)"
         fontSize={dims.size * 0.017}
         letterSpacing={2}
       >

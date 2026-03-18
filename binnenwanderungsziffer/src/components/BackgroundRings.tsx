@@ -19,7 +19,7 @@ export function BackgroundRings({ dims, phase }: Props) {
           cy={dims.cy}
           r={(dims.size / 2) * ratio}
           fill="none"
-          stroke="#0e1e30"
+          stroke="var(--border-muted)"
           strokeWidth={0.5}
           strokeDasharray={ratio < 0.78 ? '1,4' : undefined}
           style={{

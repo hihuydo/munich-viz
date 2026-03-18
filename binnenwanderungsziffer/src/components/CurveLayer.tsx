@@ -1,17 +1,17 @@
 import { useEffect, useRef } from 'react'
 import type { NodeWithPosition, ChartDimensions } from '@/data/types'
 import type { IntroPhase } from '@/hooks/useIntroAnimation'
-import { bezierPath, getTop5 } from '@/lib/chartMath'
+import { bezierPath, getContrastPairs } from '@/lib/chartMath'
 
 interface Props {
   nodes: NodeWithPosition[]
   dims: ChartDimensions
-  globalMax: number
   opScale: (v: number) => number
   wScale: (v: number) => number
   phase: IntroPhase
   hoveredNode: string | null
   pinnedNode: string | null
+  reducedMotion: boolean
 }
 
 interface CurvePair {
@@ -24,35 +24,33 @@ interface CurvePair {
 }
 
 export function CurveLayer({
-  nodes, dims, globalMax: _globalMax, opScale, wScale,
-  phase, hoveredNode, pinnedNode,
+  nodes, dims, opScale, wScale,
+  phase, hoveredNode, pinnedNode, reducedMotion,
 }: Props) {
   const pathRefs = useRef<Map<string, SVGPathElement>>(new Map())
 
   const posMap = new Map(nodes.map(n => [n.raumbezug, n]))
-  const { top5zuzug, top5wegzug } = getTop5(nodes)
+  const contrastPairs = getContrastPairs(nodes, pinnedNode ?? hoveredNode)
 
   const pairs: CurvePair[] = []
-  for (const z of top5zuzug) {
-    for (const w of top5wegzug) {
-      const pZ = posMap.get(z.raumbezug)
-      const pW = posMap.get(w.raumbezug)
-      if (!pZ || !pW) continue
-      const combined = Math.abs(z.indikatorwert) + Math.abs(w.indikatorwert)
-      pairs.push({
-        key: `${z.raumbezug}—${w.raumbezug}`,
-        zName: z.raumbezug,
-        wName: w.raumbezug,
-        d: bezierPath(pZ, pW, dims),
-        opacity: opScale(combined),
-        strokeWidth: wScale(combined),
-      })
-    }
+  for (const pair of contrastPairs) {
+    const pZ = posMap.get(pair.positive.raumbezug)
+    const pW = posMap.get(pair.negative.raumbezug)
+    if (!pZ || !pW) continue
+    const combined = Math.abs(pair.positive.indikatorwert) + Math.abs(pair.negative.indikatorwert)
+    pairs.push({
+      key: `${pair.positive.raumbezug}—${pair.negative.raumbezug}`,
+      zName: pair.positive.raumbezug,
+      wName: pair.negative.raumbezug,
+      d: bezierPath(pZ, pW, dims),
+      opacity: opScale(combined),
+      strokeWidth: wScale(combined),
+    })
   }
 
   // Animate stroke-dashoffset on intro phase 3
   useEffect(() => {
-    if (phase < 3) return
+    if (phase < 3 || reducedMotion) return
     pathRefs.current.forEach(el => {
       const len = el.getTotalLength()
       el.style.strokeDasharray = String(len)
@@ -62,7 +60,7 @@ export function CurveLayer({
       void el.getBoundingClientRect()
       el.style.strokeDashoffset = '0'
     })
-  }, [phase])
+  }, [phase, reducedMotion])
 
   // Determine interaction state
   const activeNode = pinnedNode ?? hoveredNode
@@ -90,10 +88,11 @@ export function CurveLayer({
             }}
             fill="none"
             d={pair.d}
-            stroke="rgba(255,255,255,1)"
+            stroke="var(--color-chart-line)"
             strokeWidth={pair.strokeWidth}
             style={{
               opacity,
+              strokeDasharray: reducedMotion ? undefined : undefined,
               transition: i === 0 && phase < 3
                 ? undefined
                 : 'opacity 150ms ease',

@@ -1,4 +1,5 @@
 import type { NodeWithPosition } from '@/data/types'
+import { districtLabel } from '@/lib/chartMath'
 
 const GAP = 14
 const MARGIN = 8
@@ -18,8 +19,8 @@ export function Tooltip({ data, containerWidth, containerHeight }: Props) {
   const dy = nodeY - cy
 
   // Estimate card size (same as CSS min-width)
-  const elW = 180
-  const elH = 120
+  const elW = 196
+  const elH = 146
 
   let left = dx >= 0 ? nodeX + GAP : nodeX - elW - GAP
   let top  = dy >= 0 ? nodeY + GAP : nodeY - elH - GAP
@@ -35,31 +36,39 @@ export function Tooltip({ data, containerWidth, containerHeight }: Props) {
   return (
     <div
       className="absolute pointer-events-none z-10"
+      role="status"
+      aria-live="polite"
       style={{
         left,
         top,
-        background: '#0b1827',
-        border: '1px solid #1a3050',
-        borderRadius: 4,
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-base)',
+        borderRadius: 'var(--radius-lg)',
         padding: '16px 18px',
         minWidth: elW,
-        maxWidth: 200,
+        maxWidth: 212,
+        boxShadow: '0 12px 32px var(--color-shadow-card)',
       }}
     >
-      <div style={{ fontSize: 13, color: '#8aa0b8', marginBottom: 8, fontFamily: 'Georgia, serif', lineHeight: 1.5 }}>
-        {data.raumbezug}
+      <div style={{ fontSize: 14, color: 'var(--text-primary)', marginBottom: 6, fontFamily: 'var(--font-serif)', lineHeight: 1.45 }}>
+        {districtLabel(data.raumbezug)}
+      </div>
+      <div style={{ fontSize: 11, color: 'var(--text-faint)', letterSpacing: 0.8, marginBottom: 4 }}>
+        SALDO JE 1.000 EW.
       </div>
       <div style={{
-        fontSize: 28,
-        fontFamily: 'Georgia, serif',
-        marginBottom: 14,
-        color: isPositive ? '#4ade80' : '#fb923c',
+        fontSize: 30,
+        fontFamily: 'var(--font-serif)',
+        marginBottom: 12,
+        color: isPositive ? 'var(--accent-green)' : 'var(--accent-orange)',
       }}>
         {sign}{data.indikatorwert.toFixed(1)}
       </div>
-      <TooltipRow label="ZUGEZOGENE" value={data.zugezogene?.toLocaleString('de-DE') ?? '—'} />
-      <TooltipRow label="WEGGEZOGENE" value={data.weggezogene?.toLocaleString('de-DE') ?? '—'} />
-      <TooltipRow label="PRO 1.000 EW" value="normiert" />
+      <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.45, marginBottom: 8 }}>
+        Normierter Saldo, keine Prozentzahl und keine absolute Personenzahl.
+      </div>
+      <TooltipRow label="ZUZÜGE" value={data.zugezogene?.toLocaleString('de-DE') ?? '—'} />
+      <TooltipRow label="WEGZÜGE" value={data.weggezogene?.toLocaleString('de-DE') ?? '—'} />
     </div>
   )
 }
@@ -70,13 +79,13 @@ function TooltipRow({ label, value }: { label: string; value: string }) {
       display: 'flex',
       justifyContent: 'space-between',
       gap: 12,
-      fontSize: 9,
-      color: '#4a6880',
-      letterSpacing: 1,
-      marginTop: 6,
+      fontSize: 11,
+      color: 'var(--text-secondary)',
+      letterSpacing: 0.4,
+      marginTop: 5,
     }}>
       <span>{label}</span>
-      <span style={{ color: '#8aa0b8' }}>{value}</span>
+      <span style={{ color: 'var(--text-primary)' }}>{value}</span>
     </div>
   )
 }

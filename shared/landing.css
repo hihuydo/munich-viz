@@ -1,0 +1,167 @@
+body.munich-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0 28px 56px;
+}
+
+.munich-shell__header {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto 36px;
+  padding: 44px 0 24px;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.munich-shell__eyebrow {
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.munich-shell__title {
+  font-size: 16px;
+  font-weight: normal;
+  color: var(--text-secondary);
+  letter-spacing: 2.6px;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.munich-shell__subtitle {
+  display: block;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  margin-top: 10px;
+}
+
+.munich-shell__main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.munich-shell__section-label {
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.munich-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.munich-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 36px var(--color-shadow-card);
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+}
+
+.munich-card:hover {
+  box-shadow:
+    0 18px 40px rgba(var(--accent-green-rgb), 0.12);
+  transform: translateY(-3px);
+}
+
+.munich-card__link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.munich-card__preview {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  opacity: 0.92;
+  transition: opacity var(--transition-base);
+}
+
+.munich-card:hover .munich-card__preview {
+  opacity: 1;
+}
+
+.munich-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px 26px 26px;
+  flex: 1;
+}
+
+.munich-card__tag {
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--accent-green);
+  opacity: 0.85;
+}
+
+.munich-card__title {
+  font-size: 22px;
+  font-weight: normal;
+  color: var(--text-strong);
+  letter-spacing: 0.2px;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.munich-card__desc {
+  font-size: 17px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  letter-spacing: 0.2px;
+}
+
+.munich-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-muted);
+}
+
+.munich-card__year {
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+}
+
+.munich-card__arrow {
+  font-size: 18px;
+  color: var(--accent-green);
+  opacity: 0;
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.munich-card:hover .munich-card__arrow {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+@media (max-width: 600px) {
+  body.munich-shell {
+    padding: 0 16px 48px;
+  }
+
+  .munich-shell__header {
+    margin-bottom: 28px;
+    padding: 32px 0 18px;
+  }
+
+  .munich-card-grid {
+    grid-template-columns: 1fr;
+  }
+}

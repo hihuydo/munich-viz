@@ -26,6 +26,11 @@ export interface ChartDimensions {
   size: number
 }
 
+export interface TrendPoint {
+  year: number
+  value: number
+}
+
 /** Raw record from JSON — index-accessed array */
 export type RawRecord = [
   number,         // 0 _id

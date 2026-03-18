@@ -2,6 +2,7 @@
   "name": "munich-viz-shell",
   "private": true,
   "scripts": {
+    "build": "cd binnenwanderungsziffer && pnpm build",
     "serve": "python3 -m http.server 8080"
   }
 }
