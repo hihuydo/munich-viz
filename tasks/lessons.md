@@ -1,0 +1,51 @@
+# Lessons
+
+## Deployment
+
+### Vercel: pnpm@10 URLSearchParams bug
+- **Symptom:** `ERR_PNPM_META_FETCH_FAIL: Value of "this" must be of type URLSearchParams` on Vercel build
+- **Cause:** pnpm@10 incompatible with Vercel's Node.js version; lockfile format mismatch
+- **Fix:** Use `npm install && npm run build` in vercel.json buildCommand instead of pnpm
+
+### Vercel: relative asset paths in subdir
+- **Symptom:** App renders blank when served from `/subdir/dist/` — JS/CSS 404
+- **Cause:** `serve` package redirects `/subdir/dist/index.html` → `/subdir/dist` (no trailing slash), breaking relative `./assets/` resolution
+- **Fix:** Use `python3 -m http.server` instead of `serve` for local static serving; Vite config needs `base: './'`
+
+### Vercel: outputDirectory = "." for multi-app shell
+- Serving the whole `munich/` dir (shell + built sub-apps) requires `"outputDirectory": "."` in vercel.json
+- Build command must cd into the sub-app and build there
+
+## Architecture
+
+### D3 + React separation
+- D3 only for: `scaleSqrt`, `scaleLinear`, `max`, `bezierPath` math → lives in `lib/` and `hooks/`
+- React renders all SVG elements as JSX — no `d3.select()` on DOM
+- Intro animation via phase state machine (0→5), CSS transitions on SVG elements
+
+### SVG animations without d3.select
+- CSS `@keyframes` + class names for breathing/pulse: requires `transform-box: fill-box; transform-origin: center` on SVG elements
+- Particle flow: native SVG `<animateMotion>` along bezier path — no JS loop needed
+- Stagger particles with `begin={delay + "s"}` offset
+
+### Stroke-dashoffset intro animation
+- Must use `useRef` callback refs + `getTotalLength()` in a `useEffect` watching the phase
+- Force reflow with `void el.getBoundingClientRect()` before setting final dashoffset
+
+## Local Dev
+
+### Port 8080 already in use
+- Kill with: `kill $(lsof -ti:8080)` then restart `pnpm serve`
+- Or use a different port: `python3 -m http.server 8081`
+
+### Repo structure
+- Git root: `munich/`  → GitHub: `hihuydo/munich-viz`
+- Viz source: `munich/binnenwanderungsziffer/src/`
+- Dev server: `cd binnenwanderungsziffer && pnpm dev`
+- Deploy: `vercel --prod --yes` from `munich/`
+
+## Tailwind v4
+
+- CSS variables use `@theme {}` block — not `@layer base { :root {} }`
+- `@apply border-border` does NOT work without defining the color in `@theme`
+- `noUncheckedSideEffectImports` must be `false` in tsconfig to allow `import './index.css'`
