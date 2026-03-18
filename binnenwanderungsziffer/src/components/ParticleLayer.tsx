@@ -54,7 +54,8 @@ export function ParticleLayer({ nodes, dims, pinnedNode }: Props) {
         Array.from({ length: PARTICLES }, (_, i) => {
           const delay = (i / PARTICLES) * DURATION
           // source → white midpoint → dest, synced with opacity fade
-          const fillValues = `${lane.sourceColor};var(--color-particle-mid);${lane.destColor}`
+          // Use literal hex — SVG SMIL cannot resolve CSS custom properties
+          const fillValues = `${lane.sourceColor};#ffffff;${lane.destColor}`
           return (
             <circle
               key={`${lane.key}-${i}`}
