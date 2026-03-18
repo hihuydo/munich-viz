@@ -42,30 +42,23 @@ export function Tooltip({ data, containerWidth, containerHeight }: Props) {
         left,
         top,
         background: 'var(--bg-card)',
-        border: '1px solid var(--border-base)',
-        borderRadius: 'var(--radius-lg)',
         padding: '16px 18px',
         minWidth: elW,
         maxWidth: 212,
-        boxShadow: '0 12px 32px var(--color-shadow-card)',
       }}
     >
       <div style={{ fontSize: 14, color: 'var(--text-primary)', marginBottom: 6, fontFamily: 'var(--font-serif)', lineHeight: 1.45 }}>
         {districtLabel(data.raumbezug)}
       </div>
-      <div style={{ fontSize: 11, color: 'var(--text-faint)', letterSpacing: 0.8, marginBottom: 4 }}>
-        SALDO JE 1.000 EW.
-      </div>
       <div style={{
         fontSize: 30,
         fontFamily: 'var(--font-serif)',
-        marginBottom: 12,
         color: isPositive ? 'var(--accent-green)' : 'var(--accent-orange)',
       }}>
         {sign}{data.indikatorwert.toFixed(1)}
       </div>
-      <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.45, marginBottom: 8 }}>
-        Normierter Saldo, keine Prozentzahl und keine absolute Personenzahl.
+      <div style={{ fontSize: 11, color: 'var(--text-faint)', letterSpacing: 0.8, marginBottom: 8, marginTop: 4 }}>
+        SALDO JE 1.000 EW.
       </div>
       <TooltipRow label="ZUZÜGE" value={data.zugezogene?.toLocaleString('de-DE') ?? '—'} />
       <TooltipRow label="WEGZÜGE" value={data.weggezogene?.toLocaleString('de-DE') ?? '—'} />

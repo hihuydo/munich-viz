@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import type { BinnenwanderungRecord } from '@/data/types'
 import type { IntroPhase } from '@/hooks/useIntroAnimation'
@@ -76,12 +77,12 @@ export function Sidebar({
       style={{
         display: 'flex',
         flexDirection: 'column',
-        padding: isCompact ? '22px 16px 28px' : '34px 22px',
-        gap: 14,
+        padding: isCompact ? '16px 14px 22px' : '22px 16px',
+        gap: 6,
         borderLeft: isCompact ? 'none' : '1px solid var(--border-muted)',
         borderTop: isCompact ? '1px solid var(--border-muted)' : 'none',
         overflowY: 'auto',
-        width: isCompact ? '100%' : 344,
+        width: isCompact ? '100%' : 300,
         flexShrink: 0,
         opacity: visible ? 1 : 0,
         transition: 'opacity 500ms ease',
@@ -91,16 +92,12 @@ export function Sidebar({
           'linear-gradient(180deg, rgba(var(--bg-primary-rgb), 0.94), rgba(var(--bg-primary-rgb), 0.98))',
       }}
     >
-      <div>
-        <div style={{ fontSize: 13, letterSpacing: 2.6, color: 'var(--text-primary)' }}>
+      <div style={{ marginBottom: 6 }}>
+        <div style={{ fontSize: 12, letterSpacing: 2.6, color: 'var(--text-primary)' }}>
           BINNENWANDERUNG
         </div>
-        <div style={{ fontSize: 12, letterSpacing: 1.2, color: 'var(--text-secondary)', marginTop: 4 }}>
+        <div style={{ fontSize: 11, letterSpacing: 1.2, color: 'var(--text-secondary)', marginTop: 3 }}>
           MÜNCHEN · STADTBEZIRKE
-        </div>
-        <div style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--text-soft)', marginTop: 12, maxWidth: 260 }}>
-          Sortiert nach aktuellem Saldo:
-          starke Gewinne oben, starke Verluste im weiteren Kreisverlauf.
         </div>
         <a
           href="../../index.html"
@@ -108,7 +105,7 @@ export function Sidebar({
             fontSize: 9,
             letterSpacing: 1.4,
             color: 'var(--text-muted)',
-            marginTop: 12,
+            marginTop: 8,
             display: 'inline-block',
             textDecoration: 'none',
           }}
@@ -117,15 +114,15 @@ export function Sidebar({
         </a>
       </div>
 
-      <SectionCard title="Legende">
+      <SectionCard title="Legende" defaultOpen={false}>
         <LegendRow color="var(--accent-green)" label="Grün" description="Bezirke mit positivem Saldo" />
         <LegendRow color="var(--accent-orange)" label="Orange" description="Bezirke mit negativem Saldo" />
         <LegendRow color="var(--text-contrast)" label="Linien" description="markante Kontraste zwischen Plus und Minus" />
         <LegendRow color="var(--text-primary)" label="Größe" description="Intensität des Saldos je 1.000 Ew." />
       </SectionCard>
 
-      <SectionCard title="Steuerung">
-        <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+      <SectionCard title="Steuerung" defaultOpen>
+        <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
           {(['deutsch', 'nichtdeutsch'] as const).map(cat => (
             <button
               key={cat}
@@ -139,8 +136,8 @@ export function Sidebar({
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <span style={{ fontSize: 12, letterSpacing: 1.4, color: 'var(--text-secondary)' }}>JAHR</span>
-          <span style={{ fontSize: 24, color: 'var(--text-strong)' }}>{activeYear}</span>
+          <span style={{ fontSize: 11, letterSpacing: 1.4, color: 'var(--text-secondary)' }}>JAHR</span>
+          <span style={{ fontSize: 20, color: 'var(--text-strong)' }}>{activeYear}</span>
         </div>
         <input
           type="range"
@@ -150,37 +147,26 @@ export function Sidebar({
           step={1}
           aria-label="Jahr auswählen"
           onChange={event => onYearChange(Number(event.target.value))}
-          style={{ width: '100%', marginTop: 10 }}
+          style={{ width: '100%', marginTop: 8 }}
           className="viz-slider"
         />
       </SectionCard>
 
-      <SectionCard title="Lagebild">
-        <div
-          style={{
-            fontSize: 13,
-            lineHeight: 1.6,
-            color: 'var(--text-soft)',
-            marginTop: -2,
-          }}
-        >
-          Große Werte zeigen den <strong style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Saldo je 1.000 Einwohner</strong>.
-          Das ist ein normierter Kennwert, keine Prozentzahl und keine absolute Personenzahl.
-        </div>
+      <SectionCard title="Lagebild" defaultOpen>
         <KpiGrid>
           <KpiCard
             label="Top Plus"
             value={strongestInflow ? formatValue(strongestInflow.indikatorwert) : '—'}
             accent="var(--accent-green)"
             detail={strongestInflow ? districtLabel(strongestInflow.raumbezug) : 'Keine positive Ausprägung'}
-            note="Saldo je 1.000 Einwohner"
+            note="Saldo je 1.000 Ew."
           />
           <KpiCard
             label="Top Minus"
             value={strongestOutflow ? formatValue(strongestOutflow.indikatorwert) : '—'}
             accent="var(--accent-orange)"
             detail={strongestOutflow ? districtLabel(strongestOutflow.raumbezug) : 'Keine negative Ausprägung'}
-            note="Saldo je 1.000 Einwohner"
+            note="Saldo je 1.000 Ew."
           />
           <KpiCard
             label="Im Plus"
@@ -193,20 +179,20 @@ export function Sidebar({
             label="Durchschnitt"
             value={formatValue(average)}
             accent="var(--accent-blue)"
-            detail="Saldo je 1.000 Einwohner"
+            detail="Saldo je 1.000 Ew."
             note="Normierter Kennwert"
           />
         </KpiGrid>
       </SectionCard>
 
       {focusRecord && (
-        <SectionCard title={activeNodeName ? 'Bezirk im Fokus' : 'Spotlight'}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'flex-start' }}>
+        <SectionCard title={activeNodeName ? 'Bezirk im Fokus' : 'Spotlight'} defaultOpen>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' }}>
             <div>
-              <div style={{ fontSize: 19, color: 'var(--text-strong)', lineHeight: 1.4 }}>
+              <div style={{ fontSize: 16, color: 'var(--text-strong)', lineHeight: 1.4 }}>
                 {districtLabel(focusRecord.raumbezug)}
               </div>
-              <div style={{ fontSize: 11, color: 'var(--text-faint)', letterSpacing: 1.6, marginTop: 7 }}>
+              <div style={{ fontSize: 10, color: 'var(--text-faint)', letterSpacing: 1.6, marginTop: 5 }}>
                 RANG {focusRank ?? '—'} IM JAHR {activeYear}
               </div>
             </div>
@@ -219,12 +205,12 @@ export function Sidebar({
                   color: 'var(--text-primary)',
                   fontSize: 10,
                   letterSpacing: 1,
-                  padding: '8px 11px',
+                  padding: '6px 10px',
                   borderRadius: 999,
                   cursor: 'pointer',
                 }}
               >
-                AUSWAHL LÖSEN
+                LÖSEN
               </button>
             )}
           </div>
@@ -232,19 +218,19 @@ export function Sidebar({
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(132px, 1fr))',
-              gap: 10,
-              marginTop: 14,
+              gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+              gap: 6,
+              marginTop: 8,
             }}
           >
             <MetricPill label="Aktuell" value={formatValue(focusRecord.indikatorwert)} />
             <MetricPill label="Zum Vorjahr" value={delta === null ? '—' : formatValue(delta)} />
-            <MetricPill label="Langfristiger Schnitt" value={trendAverage === null ? '—' : formatValue(trendAverage)} />
+            <MetricPill label="Langfr. Schnitt" value={trendAverage === null ? '—' : formatValue(trendAverage)} />
           </div>
 
-          <div style={{ marginTop: 14 }}>
+          <div style={{ marginTop: 10 }}>
             <TrendSparkline values={focusTrend.map(point => point.indikatorwert)} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, fontSize: 11, color: 'var(--text-faint)', letterSpacing: 1.2 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 10, color: 'var(--text-faint)', letterSpacing: 1.2 }}>
               <span>{focusTrend[0]?.jahr ?? years[0]}</span>
               <span>{focusTrend[focusTrend.length - 1]?.jahr ?? activeYear}</span>
             </div>
@@ -252,27 +238,27 @@ export function Sidebar({
         </SectionCard>
       )}
 
-      <SectionCard title={activeNodeName ? 'Kontrastlinien' : 'Prägende Kontraste'}>
+      <SectionCard title={activeNodeName ? 'Kontrastlinien' : 'Prägende Kontraste'} defaultOpen={false}>
         <div style={{ display: 'grid', gap: 2 }}>
           {contrastPairs.map(pair => (
             <div
               key={`${pair.positive.raumbezug}-${pair.negative.raumbezug}`}
               style={{
                 display: 'grid',
-                gap: 4,
-                padding: '10px 0',
+                gap: 3,
+                padding: '8px 0',
                 borderBottom: '1px solid var(--border-quiet)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'baseline' }}>
-                <span style={{ color: 'var(--accent-green)', fontSize: 13, lineHeight: 1.5 }}>
+                <span style={{ color: 'var(--accent-green)', fontSize: 12, lineHeight: 1.5 }}>
                   {districtLabel(pair.positive.raumbezug)}
                 </span>
-                <span style={{ color: 'var(--accent-orange)', fontSize: 13, lineHeight: 1.5, textAlign: 'right' }}>
+                <span style={{ color: 'var(--accent-orange)', fontSize: 12, lineHeight: 1.5, textAlign: 'right' }}>
                   {districtLabel(pair.negative.raumbezug)}
                 </span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 11 }}>
                 <span style={{ color: 'var(--accent-green)' }}>{formatValue(pair.positive.indikatorwert)}</span>
                 <span style={{ color: 'var(--accent-orange)' }}>{formatValue(pair.negative.indikatorwert)}</span>
               </div>
@@ -284,21 +270,51 @@ export function Sidebar({
   )
 }
 
-function SectionCard({ title, children }: { title: string; children: ReactNode }) {
+function SectionCard({
+  title,
+  children,
+  defaultOpen = true,
+}: {
+  title: string
+  children: ReactNode
+  defaultOpen?: boolean
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+
   return (
-    <section
-      style={{
-        display: 'grid',
-        gap: 14,
-        padding: '16px 18px 18px',
-        borderRadius: 'var(--radius-xl)',
-        border: '1px solid var(--border-soft)',
-        background: 'linear-gradient(180deg, rgba(var(--bg-card-rgb), 0.96), rgba(var(--bg-primary-rgb), 0.96))',
-        boxShadow: '0 14px 32px var(--color-shadow-card)',
-      }}
-    >
-      <div style={{ fontSize: 12, letterSpacing: 1.2, color: 'var(--text-faint)' }}>{title}</div>
-      {children}
+    <section style={{ background: 'var(--bg-card)' }}>
+      <button
+        onClick={() => setIsOpen(v => !v)}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          padding: '10px 14px',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          fontFamily: 'var(--font-serif)',
+        }}
+      >
+        <span style={{ fontSize: 11, letterSpacing: 1.2, color: 'var(--text-faint)' }}>{title}</span>
+        <span
+          style={{
+            fontSize: 10,
+            color: 'var(--text-muted)',
+            transform: isOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
+            transition: 'transform 0.2s ease',
+            display: 'inline-block',
+          }}
+        >
+          ▾
+        </span>
+      </button>
+      {isOpen && (
+        <div style={{ display: 'grid', gap: 10, padding: '0 14px 14px' }}>
+          {children}
+        </div>
+      )}
     </section>
   )
 }
@@ -313,19 +329,19 @@ function LegendRow({
   description: string
 }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'auto auto 1fr', gap: 10, alignItems: 'center' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'auto auto 1fr', gap: 8, alignItems: 'center' }}>
       <span
         aria-hidden="true"
         style={{
-          width: 10,
-          height: 10,
+          width: 8,
+          height: 8,
           borderRadius: 999,
           background: color,
-          boxShadow: `0 0 16px ${color}55`,
+          boxShadow: `0 0 12px ${color}55`,
         }}
       />
-      <span style={{ color: 'var(--text-contrast)', fontSize: 14 }}>{label}</span>
-      <span style={{ color: 'var(--text-soft)', fontSize: 13, lineHeight: 1.58 }}>{description}</span>
+      <span style={{ color: 'var(--text-contrast)', fontSize: 13 }}>{label}</span>
+      <span style={{ color: 'var(--text-soft)', fontSize: 12, lineHeight: 1.5 }}>{description}</span>
     </div>
   )
 }
@@ -335,8 +351,8 @@ function KpiGrid({ children }: { children: ReactNode }) {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-        gap: 10,
+        gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+        gap: 6,
       }}
     >
       {children}
@@ -360,16 +376,14 @@ function KpiCard({
   return (
     <div
       style={{
-        padding: '14px 14px 12px',
-        borderRadius: 'var(--radius-lg)',
-        background: 'rgba(var(--bg-card-rgb), 0.9)',
-        border: '1px solid var(--border-quiet)',
+        padding: '10px 12px 10px',
+        background: 'var(--bg-card)',
       }}
     >
-      <div style={{ fontSize: 11, letterSpacing: 0.9, color: 'var(--text-faint)' }}>{label}</div>
-      <div style={{ fontSize: 26, color: accent, marginTop: 8 }}>{value}</div>
-      <div style={{ fontSize: 10, color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: 4 }}>{note}</div>
-      <div style={{ fontSize: 12, color: 'var(--text-primary)', lineHeight: 1.55, marginTop: 6 }}>{detail}</div>
+      <div style={{ fontSize: 10, letterSpacing: 0.9, color: 'var(--text-faint)' }}>{label}</div>
+      <div style={{ fontSize: 22, color: accent, marginTop: 6 }}>{value}</div>
+      <div style={{ fontSize: 10, color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: 3 }}>{note}</div>
+      <div style={{ fontSize: 11, color: 'var(--text-primary)', lineHeight: 1.5, marginTop: 4 }}>{detail}</div>
     </div>
   )
 }
@@ -379,18 +393,15 @@ function MetricPill({ label, value }: { label: string; value: string }) {
     <div
       style={{
         display: 'grid',
-        gap: 4,
+        gap: 3,
         alignContent: 'start',
-        minHeight: 96,
-        padding: '12px 14px',
-        borderRadius: 'var(--radius-lg)',
-        border: '1px solid var(--border-strong)',
-        background: 'rgba(var(--bg-card-rgb), 0.75)',
+        padding: '10px 12px',
+        background: 'var(--bg-card)',
       }}
     >
-      <div style={{ fontSize: 11, letterSpacing: 0.8, color: 'var(--text-faint)', lineHeight: 1.35 }}>{label}</div>
-      <div style={{ fontSize: 17, color: 'var(--text-strong)', lineHeight: 1.2 }}>{value}</div>
-      <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+      <div style={{ fontSize: 10, letterSpacing: 0.8, color: 'var(--text-faint)', lineHeight: 1.35 }}>{label}</div>
+      <div style={{ fontSize: 15, color: 'var(--text-strong)', lineHeight: 1.2 }}>{value}</div>
+      <div style={{ fontSize: 10, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
         je 1.000 Einwohner
       </div>
     </div>
@@ -403,9 +414,9 @@ function toggleButtonStyle(isActive: boolean): CSSProperties {
     background: isActive ? 'var(--accent-green)' : 'var(--bg-subtle)',
     border: `1px solid ${isActive ? 'var(--accent-green)' : 'var(--border-base)'}`,
     color: isActive ? 'var(--text-inverse)' : 'var(--text-faint)',
-    fontSize: 11,
+    fontSize: 10,
     letterSpacing: 0.5,
-    padding: '10px 11px',
+    padding: '8px 10px',
     cursor: 'pointer',
     borderRadius: 999,
     fontFamily: 'var(--font-serif)',

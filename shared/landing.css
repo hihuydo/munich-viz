@@ -10,7 +10,6 @@ body.munich-shell {
   width: 100%;
   margin: 0 auto 36px;
   padding: 44px 0 24px;
-  border-bottom: 1px solid var(--border-muted);
 }
 
 .munich-shell__eyebrow {
@@ -59,17 +58,6 @@ body.munich-shell {
 
 .munich-card {
   background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 16px 36px var(--color-shadow-card);
-  transition:
-    box-shadow var(--transition-base),
-    transform var(--transition-base);
-}
-
-.munich-card:hover {
-  box-shadow:
-    0 18px 40px rgba(var(--accent-green-rgb), 0.12);
-  transform: translateY(-3px);
 }
 
 .munich-card__link {
@@ -84,13 +72,6 @@ body.munich-shell {
   object-fit: cover;
   object-position: center;
   display: block;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  opacity: 0.92;
-  transition: opacity var(--transition-base);
-}
-
-.munich-card:hover .munich-card__preview {
-  opacity: 1;
 }
 
 .munich-card__body {

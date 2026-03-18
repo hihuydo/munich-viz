@@ -28,14 +28,14 @@
   --text-inverse: #ffffff;
 
   /* Accent / data colors */
-  --accent-green: #41995f;
-  --accent-green-rgb: 65, 153, 95;
-  --accent-green-soft: #5cad73;
-  --accent-green-tint: #cfe8d4;
-  --accent-orange: #cf7a38;
-  --accent-orange-rgb: 207, 122, 56;
-  --accent-orange-soft: #d98e54;
-  --accent-orange-tint: #f1d6c1;
+  --accent-green: #22c55e;
+  --accent-green-rgb: 34, 197, 94;
+  --accent-green-soft: #4ade80;
+  --accent-green-tint: #bbf7d0;
+  --accent-orange: #f97316;
+  --accent-orange-rgb: 249, 115, 22;
+  --accent-orange-soft: #fb923c;
+  --accent-orange-tint: #fed7aa;
   --accent-blue: #4b91ca;
   --accent-neutral: #a8b7af;
   --accent-white: #ffffff;
@@ -47,7 +47,7 @@
   --color-negative-soft: var(--accent-orange-soft);
   --color-neutral: var(--accent-neutral);
   --color-chart-line: rgba(93, 106, 122, 0.34);
-  --color-glow-green: rgba(65, 153, 95, 0.38);
+  --color-glow-green: rgba(34, 197, 94, 0.38);
   --color-shadow-card: rgba(77, 89, 107, 0.12);
   --color-focus-ring: var(--accent-blue);
   --color-particle-mid: var(--accent-white);
