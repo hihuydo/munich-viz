@@ -69,6 +69,11 @@
 - CSS `@keyframes` + class names for breathing/pulse: requires `transform-box: fill-box; transform-origin: center` on SVG elements
 - Particle flow: native SVG `<animateMotion>` along bezier path — no JS loop needed
 - Stagger particles with `begin={delay + "s"}` offset
+- **SVG SMIL cannot resolve CSS custom properties**: `<animate attributeName="fill" values="...;var(--token);...">` silently fails — always use literal hex values in SVG animation `values`
+
+### Vercel deployment is manual (no auto-deploy)
+- GitHub → Vercel auto-deploy is NOT connected; run `vercel --prod --yes` from `munich/` after any change
+- Always rebuild the viz first: `cd binnenwanderungsziffer && npm run build`
 
 ### Stroke-dashoffset intro animation
 - Must use `useRef` callback refs + `getTotalLength()` in a `useEffect` watching the phase
