@@ -1,42 +1,38 @@
 # Shared Munich Design Layer
 
-This folder is the single source of truth for repo-wide visual design decisions in `munich/`.
+This folder is the design system for the **root `index.html` landing page** only.
+Each visualization project manages its own design tokens and styles independently.
 
 ## Files
 
 - `style.css`
-  Stable public entry point for shared tokens and base rules.
+  Entry point for the landing page — imports tokens + base reset.
 - `tokens.css`
-  Global color, typography, radius, and semantic chart tokens.
+  Color tokens, typography, radius, and semantic aliases for the landing page.
 - `base.css`
-  Minimal reset and shared base element styles.
+  Minimal CSS reset and base element styles.
 - `landing.css`
-  Shared layout and card classes for the root `index.html` shell.
+  Layout and card styles for the root shell (`index.html`).
 
 ## Usage
 
-### Root landing page
+### Root landing page only
 
 ```html
 <link rel="stylesheet" href="./shared/style.css" />
 <link rel="stylesheet" href="./shared/landing.css" />
 ```
 
-### Static project page inside a subfolder
+## Project design system rule
 
-```html
-<link rel="stylesheet" href="../shared/style.css" />
-```
+Each project owns its design. **Do not import from `shared/` inside a sub-project.**
 
-### Vite / React project
+When adding a new visualization:
 
-```css
-@import "../../shared/style.css";
-```
+1. Create `munich/<slug>/` with its own build setup
+2. Define design tokens directly in the project's own CSS (e.g. `src/index.css`)
+3. Use the same accent color values (`#4ade80` green, `#fb923c` orange) for visual consistency
+4. Add a card to `munich/index.html` using the `munich-card__*` classes
 
-Then reference the shared CSS variables via `var(--token-name)` in CSS or inline styles.
-
-## Rule
-
-When you want a design change to affect all Munich projects, change `tokens.css` first.
-Only add project-specific styles outside this folder when the design should not be global.
+When you want a design change to affect **all Munich projects**, change `tokens.css`.
+For per-project changes, edit only that project's own CSS.

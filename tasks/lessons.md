@@ -24,12 +24,12 @@
 - Intro animation via phase state machine (0→5), CSS transitions on SVG elements
 
 ### Shared Munich design system
-- Repo-wide visual changes must start in `shared/tokens.css`, not inside a single project
-- `shared/style.css` is the stable public entry point and imports `shared/tokens.css` + `shared/base.css`
-- The root shell uses `shared/landing.css` for shared landing-page layout and card styles
-- New static subprojects should import `../shared/style.css`
-- New Vite/React projects should import `@import "../../shared/style.css";` from their app CSS
-- `binnenwanderungsziffer/` is now the reference implementation for consuming shared tokens inside a React app
+- `shared/` is the design system for the **landing page only** (`munich/index.html`)
+- Each visualization project owns its own CSS — no cross-project `@import` from `shared/`
+- `shared/style.css` = tokens + base reset, consumed only by `index.html`
+- `shared/landing.css` = card grid + shell layout for `index.html`
+- New projects: define all tokens inline in the project's own CSS (copy the token block from binnenwanderungsziffer/src/index.css as a starting point)
+- Keep accent color values consistent across projects: green `#4ade80`, orange `#fb923c`
 - `index.html` should stay structurally light; shared visual rules belong in `shared/landing.css`, not in page-local `<style>` blocks
 - When type size increases globally, re-check both landing cards and sidebar KPI blocks for overflow before calling the design done
 - For German UI copy, long labels such as `Langfristiger Schnitt` need roomier containers than pill-shaped badges; use rounded cards for multi-line metrics
@@ -42,6 +42,28 @@
 - The landing page currently uses a minimal editorial pattern: one small uppercase title, no eyebrow, no subtitle, no footer copy
 - Avoid border-heavy landing cards in the light theme; shadow-led cards read cleaner and remove unwanted vertical edge lines
 - On the chart, always-visible district labels should stay desktop-only and remain hidden on narrow/mobile breakpoints
+
+### Achromatic card style pattern (current design language)
+- All UI cards: `background: #ffffff; border: 1px solid #000000` — no tokens, hardcoded for intentionality
+- All text: `color: #000000` except green/orange accent values (indikatorwert, KpiCard value)
+- This applies to: SectionCard, KpiCard, MetricPill, Tooltip — keep consistent across new components
+- Slider: track + thumb in `#000000`, no glow/box-shadow
+
+### Sidebar phase gate removal
+- Sidebar visibility was gated on `phase >= 5` from intro hook — caused >3s load delay
+- Fix: remove the opacity/pointer-events phase gate entirely; sidebar renders immediately
+- Lesson: don't gate persistent UI panels on intro animation phases
+
+### ChartControls overlay placement
+- Fixed at `top: 50%; transform: translate(-50%, 64px)` to clear the large year label (font-size: dims.size * 0.07)
+- If year label font size changes, adjust the Y offset accordingly
+- Controls use `zIndex: 5`; tooltip uses `z-10` (Tailwind) — keep tooltip above controls
+
+### Tooltip overlap prevention
+- Gap-only approach fails when boundary clamping overrides quadrant placement
+- Correct approach: after clamping, check if node point falls inside card rect; if so, flip to opposite quadrant
+- `rightPad` prop on Tooltip accounts for sidebar width (296px) so right clamp doesn't push tooltip under sidebar
+- Estimated card size (elW/elH) must match actual rendered size — update constants if card content changes
 
 ### SVG animations without d3.select
 - CSS `@keyframes` + class names for breathing/pulse: requires `transform-box: fill-box; transform-origin: center` on SVG elements

@@ -15,6 +15,14 @@
   - Build: `cd binnenwanderungsziffer && npm install && npm run build`
   - Output: `.` (entire munich/ dir)
 - [x] Local serve: `pnpm serve` → python3 http.server 8080
+- [x] Achromatic redesign: white bg, black text, green + orange only chromatic accents
+- [x] Shared tokens.css as single source of truth (consumed by index.html + Vite app)
+- [x] ChartControls: new fixed overlay for category toggle + year slider (decoupled from Sidebar)
+- [x] Sidebar: floating fixed panel, all SectionCards collapsed by default, no phase gate on visibility
+- [x] CenterLabel: year only (no circle, no city name), font size doubled
+- [x] Tooltip: smart quad placement to avoid covering hovered node; rightPad for sidebar clearance
+- [x] Card style system: white bg + 1px solid black border on SectionCard, KpiCard, MetricPill, Tooltip
+- [x] Design system separation: shared/ = landing page only; each project self-contained CSS
 
 ## In Progress
 
