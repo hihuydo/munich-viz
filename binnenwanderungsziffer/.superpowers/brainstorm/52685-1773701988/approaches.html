@@ -1,0 +1,202 @@
+<h2>Drei Visualisierungsansätze</h2>
+<p class="subtitle">Binnenwanderungsziffer München — Zielgruppe: Bürger:innen</p>
+
+<div class="cards">
+
+  <!-- Ansatz A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f1923;padding:16px;min-height:180px;display:flex;flex-direction:column;gap:8px;">
+      <!-- Miniatur Choropleth-Karte Mock -->
+      <div style="font-size:10px;color:#aaa;margin-bottom:4px;letter-spacing:1px;">KARTE + ZEITSTRAHL</div>
+      <div style="display:flex;gap:8px;flex:1;">
+        <div style="flex:1;position:relative;">
+          <!-- Stilisierte München-Karte aus Rechtecken -->
+          <svg viewBox="0 0 120 130" width="100%" height="100%" style="display:block;">
+            <!-- Stadtbezirke als stilisierte Flächen -->
+            <rect x="20" y="5" width="80" height="20" rx="3" fill="#c62828" opacity="0.9"/>
+            <rect x="10" y="25" width="45" height="20" rx="3" fill="#e57373" opacity="0.85"/>
+            <rect x="55" y="25" width="55" height="20" rx="3" fill="#ef9a9a" opacity="0.8"/>
+            <rect x="5" y="45" width="40" height="20" rx="3" fill="#c62828" opacity="0.9"/>
+            <rect x="45" y="45" width="35" height="20" rx="3" fill="#1565c0" opacity="0.85"/>
+            <rect x="80" y="45" width="35" height="20" rx="3" fill="#90caf9" opacity="0.8"/>
+            <rect x="10" y="65" width="50" height="20" rx="3" fill="#ef9a9a" opacity="0.8"/>
+            <rect x="60" y="65" width="55" height="20" rx="3" fill="#1565c0" opacity="0.9"/>
+            <rect x="5" y="85" width="45" height="20" rx="3" fill="#e57373" opacity="0.85"/>
+            <rect x="50" y="85" width="65" height="20" rx="3" fill="#42a5f5" opacity="0.85"/>
+            <rect x="15" y="105" width="90" height="18" rx="3" fill="#1565c0" opacity="0.9"/>
+            <!-- Tooltip mock -->
+            <rect x="68" y="42" width="52" height="20" rx="3" fill="white" opacity="0.95"/>
+            <text x="71" y="53" font-size="6" fill="#333">Maxvorstadt: −11.4</text>
+          </svg>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;justify-content:flex-end;">
+          <!-- Legende -->
+          <div style="font-size:8px;color:#aaa;">Zugezogen</div>
+          <div style="background:linear-gradient(to top,#c62828,#ef9a9a,#fff,#90caf9,#1565c0);width:12px;height:60px;border-radius:2px;"></div>
+          <div style="font-size:8px;color:#aaa;">Weggezogen</div>
+        </div>
+      </div>
+      <!-- Zeitstrahl -->
+      <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+        <div style="font-size:8px;color:#aaa;">2018</div>
+        <div style="flex:1;height:4px;background:#333;border-radius:2px;position:relative;">
+          <div style="position:absolute;right:0;top:-2px;width:12px;height:8px;background:#4fc3f7;border-radius:2px;"></div>
+        </div>
+        <div style="font-size:8px;color:#4fc3f7;font-weight:bold;">2024</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Interaktive Choropleth-Karte</h3>
+      <p>Die Stadtbezirke als eingefärbte Karte: Blau = Zuzug-Gewinner, Rot = Verluste. Jahresslider zum Vergleich über Zeit. Klick auf Bezirk zeigt Details.</p>
+      <div class="pros-cons" style="margin-top:8px;">
+        <div class="pros"><h4>Stärken</h4><ul>
+          <li>Räumliche Orientierung sofort</li>
+          <li>Muster auf einen Blick erkennbar</li>
+          <li>Niedrige Einstiegshürde</li>
+        </ul></div>
+        <div class="cons"><h4>Schwächen</h4><ul>
+          <li>Braucht GeoJSON-Kartendaten</li>
+          <li>Zeitvergleich nur sequentiell</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ansatz B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f1923;padding:16px;min-height:180px;display:flex;flex-direction:column;gap:8px;">
+      <div style="font-size:10px;color:#aaa;margin-bottom:4px;letter-spacing:1px;">SCROLLYTELLING STORY</div>
+      <!-- Story-Layout Mock -->
+      <div style="display:flex;gap:10px;flex:1;">
+        <div style="width:50%;background:#1a2332;border-radius:6px;padding:8px;display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:8px;color:#4fc3f7;font-weight:bold;">↓ Scroll</div>
+          <div style="font-size:7px;color:#ccc;line-height:1.4;">„Wer zieht wohin in München?"</div>
+          <div style="height:2px;background:#4fc3f7;border-radius:1px;width:60%;"></div>
+          <div style="font-size:7px;color:#aaa;line-height:1.3;">Im Westen wächst die Stadt — Aubing verzeichnet den stärksten Zuzug...</div>
+          <div style="height:2px;background:#333;border-radius:1px;width:80%;margin-top:4px;"></div>
+          <div style="font-size:7px;color:#aaa;line-height:1.3;">Die Innenstadtbezirke verlieren Bewohner...</div>
+        </div>
+        <div style="width:50%;display:flex;flex-direction:column;gap:4px;">
+          <!-- Animated chart mock -->
+          <div style="background:#1a2332;border-radius:6px;padding:6px;flex:1;display:flex;flex-direction:column;gap:3px;justify-content:center;">
+            <div style="display:flex;align-items:center;gap:4px;">
+              <div style="font-size:6px;color:#aaa;width:40px;text-align:right;">Aubing</div>
+              <div style="height:8px;background:#1565c0;border-radius:2px;width:70%;"></div>
+              <div style="font-size:6px;color:#4fc3f7;">+28</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <div style="font-size:6px;color:#aaa;width:40px;text-align:right;">Allach</div>
+              <div style="height:8px;background:#1565c0;border-radius:2px;width:20%;"></div>
+              <div style="font-size:6px;color:#4fc3f7;">+3</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <div style="font-size:6px;color:#aaa;width:40px;text-align:right;">Maxvorst.</div>
+              <div style="height:8px;background:#c62828;border-radius:2px;width:50%;margin-left:auto;"></div>
+              <div style="font-size:6px;color:#ef9a9a;">−11</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <div style="font-size:6px;color:#aaa;width:40px;text-align:right;">Altstadt</div>
+              <div style="height:8px;background:#c62828;border-radius:2px;width:30%;margin-left:auto;"></div>
+              <div style="font-size:6px;color:#ef9a9a;">−9</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Scrollytelling Narrative</h3>
+      <p>Eine Geschichte durch die Daten: Beim Scrollen wechseln Kapitel und Charts passen sich dynamisch an. „Wer zieht wohin — und warum könnte das so sein?"</p>
+      <div class="pros-cons" style="margin-top:8px;">
+        <div class="pros"><h4>Stärken</h4><ul>
+          <li>Höchste Verständlichkeit für Laien</li>
+          <li>Führt durch die Kernaussagen</li>
+          <li>Emotional ansprechend</li>
+        </ul></div>
+        <div class="cons"><h4>Schwächen</h4><ul>
+          <li>Höchster Aufwand in Redaktion</li>
+          <li>Weniger frei explorierbar</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ansatz C -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f1923;padding:16px;min-height:180px;display:flex;flex-direction:column;gap:8px;">
+      <div style="font-size:10px;color:#aaa;margin-bottom:4px;letter-spacing:1px;">DASHBOARD + RANKING</div>
+      <!-- Dashboard Mock -->
+      <div style="display:flex;flex-direction:column;gap:6px;flex:1;">
+        <!-- KPI Zeile -->
+        <div style="display:flex;gap:6px;">
+          <div style="flex:1;background:#1a2332;border-radius:5px;padding:6px;text-align:center;">
+            <div style="font-size:14px;color:#4fc3f7;font-weight:bold;">+28.5</div>
+            <div style="font-size:6px;color:#aaa;">Top Zuzug<br/>Aubing</div>
+          </div>
+          <div style="flex:1;background:#1a2332;border-radius:5px;padding:6px;text-align:center;">
+            <div style="font-size:14px;color:#ef9a9a;font-weight:bold;">−11.4</div>
+            <div style="font-size:6px;color:#aaa;">Stärkster<br/>Wegzug</div>
+          </div>
+          <div style="flex:1;background:#1a2332;border-radius:5px;padding:6px;text-align:center;">
+            <div style="font-size:14px;color:#aaa;font-weight:bold;">25</div>
+            <div style="font-size:6px;color:#aaa;">Bezirke<br/>analysiert</div>
+          </div>
+        </div>
+        <!-- Ranking Bars -->
+        <div style="flex:1;background:#1a2332;border-radius:5px;padding:6px;display:flex;flex-direction:column;gap:2px;justify-content:center;">
+          <div style="display:flex;align-items:center;gap:3px;">
+            <div style="font-size:6px;color:#aaa;width:38px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Aubing</div>
+            <div style="flex:1;height:6px;background:#333;border-radius:2px;position:relative;">
+              <div style="position:absolute;right:50%;left:0;height:100%;background:#1565c0;border-radius:2px;"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:3px;">
+            <div style="font-size:6px;color:#aaa;width:38px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Harlaching</div>
+            <div style="flex:1;height:6px;background:#333;border-radius:2px;position:relative;">
+              <div style="position:absolute;right:50%;left:0;height:100%;background:#42a5f5;border-radius:2px;width:20%;"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:3px;">
+            <div style="font-size:6px;color:#aaa;width:38px;">Maxvorst.</div>
+            <div style="flex:1;height:6px;background:#333;border-radius:2px;position:relative;">
+              <div style="position:absolute;left:50%;height:100%;background:#c62828;border-radius:2px;width:25%;"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:3px;">
+            <div style="font-size:6px;color:#aaa;width:38px;">Altstadt</div>
+            <div style="flex:1;height:6px;background:#333;border-radius:2px;position:relative;">
+              <div style="position:absolute;left:50%;height:100%;background:#e57373;border-radius:2px;width:15%;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Filter Chips -->
+        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+          <div style="background:#1565c0;border-radius:10px;padding:2px 8px;font-size:7px;color:white;">2024</div>
+          <div style="background:#333;border-radius:10px;padding:2px 8px;font-size:7px;color:#aaa;">2023</div>
+          <div style="background:#333;border-radius:10px;padding:2px 8px;font-size:7px;color:#aaa;">Deutsch</div>
+          <div style="background:#333;border-radius:10px;padding:2px 8px;font-size:7px;color:#aaa;">Ausländisch</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Explorer Dashboard</h3>
+      <p>KPI-Kacheln + Ranking-Balken aller 25 Bezirke. Filter nach Jahr und Kategorie (deutsch/ausländisch). Jeder Bezirk klickbar für Detailansicht mit Zeitverlauf.</p>
+      <div class="pros-cons" style="margin-top:8px;">
+        <div class="pros"><h4>Stärken</h4><ul>
+          <li>Frei explorierbar</li>
+          <li>Jahres- & Kategorienfilter</li>
+          <li>Gut für Wiederbesuch</li>
+        </ul></div>
+        <div class="cons"><h4>Schwächen</h4><ul>
+          <li>Kein räumlicher Kontext</li>
+          <li>Mehr kognitiver Aufwand</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:20px;padding:12px 16px;background:#1a2332;border-radius:8px;border-left:3px solid #4fc3f7;">
+  <div class="label">Meine Empfehlung</div>
+  <p style="margin:4px 0 0;">Für Bürger:innen empfehle ich <strong>A + C kombiniert</strong>: Karte als primäre Einstiegsfläche (räumliche Intuition sofort), darunter ein kompaktes Ranking-Panel. Optional kann B als spätere Erweiterung folgen.</p>
+</div>

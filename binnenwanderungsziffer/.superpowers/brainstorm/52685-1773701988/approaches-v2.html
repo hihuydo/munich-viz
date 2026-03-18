@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binnenwanderung München — Visuelle Konzepte</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #080e1a;
+    color: #e0e8f0;
+    font-family: 'Georgia', serif;
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #c8a96e;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 11px;
+    color: #4a6080;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+
+  .concepts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .concept {
+    cursor: pointer;
+    border: 1px solid #1a2840;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+    background: #080e1a;
+    position: relative;
+  }
+
+  .concept:hover {
+    border-color: #c8a96e;
+    transform: translateY(-2px);
+  }
+
+  .concept.selected {
+    border-color: #c8a96e;
+    box-shadow: 0 0 24px rgba(200, 169, 110, 0.18);
+  }
+
+  .concept.selected::after {
+    content: '✓ Ausgewählt';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(200, 169, 110, 0.9);
+    color: #080e1a;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    font-family: sans-serif;
+    font-weight: bold;
+  }
+
+  .viz-preview {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #060c16;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .concept-body {
+    padding: 18px 20px 22px;
+    border-top: 1px solid #0f1e30;
+  }
+
+  .concept-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #c8a96e;
+    margin-bottom: 8px;
+  }
+
+  .concept-body h2 {
+    font-size: 15px;
+    font-weight: normal;
+    color: #d8e8f8;
+    margin-bottom: 8px;
+    font-family: Georgia, serif;
+  }
+
+  .concept-body p {
+    font-size: 11px;
+    line-height: 1.7;
+    color: #5a7898;
+  }
+
+  .concept-body .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border: 1px solid #1e3050;
+    border-radius: 10px;
+    color: #4a6880;
+    text-transform: uppercase;
+  }
+
+  /* ─── CONCEPT A: RADIAL PULSE ─────────────────────────────────── */
+
+  .radial-pulse-container {
+    width: 280px;
+    height: 280px;
+    position: relative;
+  }
+
+  /* ─── CONCEPT B: CHORD/FLOW ───────────────────────────────────── */
+
+  .chord-container {
+    width: 280px;
+    height: 280px;
+    position: relative;
+  }
+
+  /* ─── CONCEPT C: PARTICLE MAP ─────────────────────────────────── */
+
+  .particle-container {
+    width: 280px;
+    height: 280px;
+    position: relative;
+  }
+
+  .recommendation {
+    max-width: 1200px;
+    margin: 36px auto 0;
+    padding: 16px 22px;
+    border-left: 2px solid #c8a96e;
+    background: rgba(200, 169, 110, 0.04);
+  }
+
+  .recommendation .rec-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #c8a96e;
+    margin-bottom: 6px;
+  }
+
+  .recommendation p {
+    font-size: 12px;
+    line-height: 1.7;
+    color: #7090b0;
+  }
+
+  .recommendation strong {
+    color: #c8a96e;
+  }
+</style>
+</head>
+<body>
+
+<h1>Binnenwanderungsziffer München</h1>
+<p class="subtitle">Drei visuelle Konzepte — Schicht für Schicht</p>
+
+<div class="concepts">
+
+  <!-- ─── KONZEPT A: RADIALES PULSDIAGRAMM ─────────────────────── -->
+  <div class="concept" data-choice="a" onclick="this.classList.toggle('selected'); recordChoice('a', this.classList.contains('selected'))">
+    <div class="viz-preview">
+      <svg width="280" height="280" viewBox="0 0 280 280">
+        <defs>
+          <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#0d1e35" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#060c16" stop-opacity="1"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="glowStrong">
+            <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <circle cx="140" cy="140" r="140" fill="url(#bgGrad)"/>
+
+        <!-- Hintergrundringe -->
+        <circle cx="140" cy="140" r="40"  fill="none" stroke="#0e2040" stroke-width="0.5"/>
+        <circle cx="140" cy="140" r="65"  fill="none" stroke="#0e2040" stroke-width="0.5"/>
+        <circle cx="140" cy="140" r="90"  fill="none" stroke="#0e2040" stroke-width="0.5"/>
+        <circle cx="140" cy="140" r="115" fill="none" stroke="#0e2040" stroke-width="0.5"/>
+
+        <!-- Basislinie der Bezirke (Ring bei r=90) -->
+        <circle cx="140" cy="140" r="90" fill="none" stroke="#1a3050" stroke-width="1"/>
+
+        <!-- 25 Stadtbezirke als radiale Stäbe -->
+        <!-- Positive = nach außen (gold), Negative = nach innen (blau-weiß) -->
+        <!-- Winkelabstand = 360/25 = 14.4 Grad -->
+
+        <!-- Bezirk-Daten (Winkel, Wert, Name) — vereinfacht für Mockup -->
+        <!-- Werte aus 2024: Altstadt -8.9, Ludwigsvorstadt -10.3, Maxvorstadt -11.4, Schwabing-W -3.2,
+             Au-Haidhausen -2.3, Sendling -1.3, Sendling-W -0.6, Schwanth. -4.3, Neuhausen +1.9,
+             Moosach -5.5, Milbertshofen -9.1, Schwabing-Fr -5.9, Bogenhausen +0.1, Berg am Laim -1.7,
+             Trudering +3.6, Ramersdorf -0.7, Obergiesing +2.6, Untergiesing +4.8, Thalkirchen +5.8,
+             Hadern +1, Pasing +1.8, Aubing +28.5, Allach +3.3, Feldmoching +2.7, Laim -2.9 -->
+
+        <g id="districts">
+          <!-- Hilfsmakro: Stab von Kreis r=90 nach außen (positiv) oder innen (negativ) -->
+          <!-- Länge: |Wert| * 1.2 px, max ~34px für Aubing mit +28.5 -->
+
+          <!-- 0° = oben, im Uhrzeigersinn -->
+          <!-- Bezirk 1: Altstadt -8.9 → nach innen, blau -->
+          <line x1="140" y1="50" x2="140" y2="60.7" stroke="#4a90d9" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)"/>
+          <text x="140" y="34" text-anchor="middle" fill="#2a4060" font-size="5.5" transform="rotate(0,140,140)">Altstadt</text>
+
+          <!-- Bezirk 2: Ludwigsvorstadt -10.3 → nach innen -->
+          <line x1="156.8" y1="51.7" x2="154.5" y2="64" stroke="#4a90d9" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)" transform="rotate(14.4,140,140)"/>
+
+          <!-- Bezirk 3: Maxvorstadt -11.4 → nach innen, stärker -->
+          <line x1="156.8" y1="51.7" x2="154.5" y2="65.5" stroke="#6aabf0" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)" transform="rotate(28.8,140,140)"/>
+
+          <!-- Bezirk 4: Schwabing-W -3.2 → leicht nach innen -->
+          <line x1="156.8" y1="51.7" x2="155.5" y2="55.5" stroke="#3a7ab9" stroke-width="2" stroke-linecap="round" transform="rotate(43.2,140,140)"/>
+
+          <!-- Bezirk 5: Au-Haidhausen -2.3 -->
+          <line x1="156.8" y1="51.7" x2="155.8" y2="54.5" stroke="#3a7ab9" stroke-width="2" stroke-linecap="round" transform="rotate(57.6,140,140)"/>
+
+          <!-- Bezirk 6: Sendling -1.3 -->
+          <line x1="156.8" y1="51.7" x2="156.2" y2="53.3" stroke="#3a7ab9" stroke-width="1.5" stroke-linecap="round" transform="rotate(72,140,140)"/>
+
+          <!-- Bezirk 7: Sendling-W -0.6 -->
+          <line x1="156.8" y1="51.7" x2="156.5" y2="52.4" stroke="#3a7ab9" stroke-width="1.5" stroke-linecap="round" transform="rotate(86.4,140,140)"/>
+
+          <!-- Bezirk 8: Schwanthalerhöhe -4.3 -->
+          <line x1="156.8" y1="51.7" x2="155.0" y2="57.0" stroke="#4a90d9" stroke-width="2" stroke-linecap="round" transform="rotate(100.8,140,140)"/>
+
+          <!-- Bezirk 9: Neuhausen +1.9 → nach außen, gold -->
+          <line x1="156.8" y1="51.7" x2="157.8" y2="49.4" stroke="#c8a96e" stroke-width="2" stroke-linecap="round" filter="url(#glow)" transform="rotate(115.2,140,140)"/>
+
+          <!-- Bezirk 10: Moosach -5.5 -->
+          <line x1="156.8" y1="51.7" x2="154.5" y2="58.3" stroke="#4a90d9" stroke-width="2" stroke-linecap="round" transform="rotate(129.6,140,140)"/>
+
+          <!-- Bezirk 11: Milbertshofen -9.1 -->
+          <line x1="156.8" y1="51.7" x2="153.8" y2="62.6" stroke="#5a9fe0" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)" transform="rotate(144,140,140)"/>
+
+          <!-- Bezirk 12: Schwabing-Freimann -5.9 -->
+          <line x1="156.8" y1="51.7" x2="154.2" y2="58.8" stroke="#4a90d9" stroke-width="2" stroke-linecap="round" transform="rotate(158.4,140,140)"/>
+
+          <!-- Bezirk 13: Bogenhausen +0.1 → neutral -->
+          <line x1="156.8" y1="51.7" x2="156.8" y2="51.6" stroke="#888" stroke-width="1.5" stroke-linecap="round" transform="rotate(172.8,140,140)"/>
+
+          <!-- Bezirk 14: Berg am Laim -1.7 -->
+          <line x1="156.8" y1="51.7" x2="156.1" y2="53.7" stroke="#3a7ab9" stroke-width="1.5" stroke-linecap="round" transform="rotate(187.2,140,140)"/>
+
+          <!-- Bezirk 15: Trudering +3.6 → gold -->
+          <line x1="156.8" y1="51.7" x2="158.8" y2="47.4" stroke="#c8a96e" stroke-width="2" stroke-linecap="round" filter="url(#glow)" transform="rotate(201.6,140,140)"/>
+
+          <!-- Bezirk 16: Ramersdorf -0.7 -->
+          <line x1="156.8" y1="51.7" x2="156.5" y2="52.5" stroke="#3a7ab9" stroke-width="1.5" stroke-linecap="round" transform="rotate(216,140,140)"/>
+
+          <!-- Bezirk 17: Obergiesing +2.6 → gold -->
+          <line x1="156.8" y1="51.7" x2="158.2" y2="48.6" stroke="#c8a96e" stroke-width="2" stroke-linecap="round" filter="url(#glow)" transform="rotate(230.4,140,140)"/>
+
+          <!-- Bezirk 18: Untergiesing +4.8 → gold -->
+          <line x1="156.8" y1="51.7" x2="159.5" y2="46.0" stroke="#d4b87a" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)" transform="rotate(244.8,140,140)"/>
+
+          <!-- Bezirk 19: Thalkirchen +5.8 → gold, stärker -->
+          <line x1="156.8" y1="51.7" x2="160.2" y2="44.8" stroke="#d4b87a" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)" transform="rotate(259.2,140,140)"/>
+
+          <!-- Bezirk 20: Hadern +1.0 → gold leicht -->
+          <line x1="156.8" y1="51.7" x2="157.3" y2="50.5" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round" transform="rotate(273.6,140,140)"/>
+
+          <!-- Bezirk 21: Pasing +1.8 → gold -->
+          <line x1="156.8" y1="51.7" x2="157.8" y2="49.6" stroke="#c8a96e" stroke-width="2" stroke-linecap="round" transform="rotate(288,140,140)"/>
+
+          <!-- Bezirk 22: AUBING +28.5 → großer goldener Stab! -->
+          <line x1="156.8" y1="51.7" x2="172.5" y2="17.5" stroke="#f0c870" stroke-width="3.5" stroke-linecap="round" filter="url(#glowStrong)" transform="rotate(302.4,140,140)"/>
+          <!-- Leuchtpunkt -->
+          <circle cx="172.5" cy="17.5" r="3.5" fill="#f0c870" filter="url(#glowStrong)" transform="rotate(302.4,140,140)"/>
+
+          <!-- Bezirk 23: Allach +3.3 → gold -->
+          <line x1="156.8" y1="51.7" x2="158.6" y2="47.7" stroke="#c8a96e" stroke-width="2" stroke-linecap="round" filter="url(#glow)" transform="rotate(316.8,140,140)"/>
+
+          <!-- Bezirk 24: Feldmoching +2.7 → gold -->
+          <line x1="156.8" y1="51.7" x2="158.3" y2="48.5" stroke="#c8a96e" stroke-width="2" stroke-linecap="round" filter="url(#glow)" transform="rotate(331.2,140,140)"/>
+
+          <!-- Bezirk 25: Laim -2.9 -->
+          <line x1="156.8" y1="51.7" x2="155.3" y2="55.2" stroke="#3a7ab9" stroke-width="2" stroke-linecap="round" transform="rotate(345.6,140,140)"/>
+        </g>
+
+        <!-- Zentrum: Jahr -->
+        <circle cx="140" cy="140" r="28" fill="#0a1525" stroke="#1a3050" stroke-width="0.5"/>
+        <text x="140" y="136" text-anchor="middle" fill="#c8a96e" font-size="18" font-family="Georgia" letter-spacing="1">2024</text>
+        <text x="140" y="148" text-anchor="middle" fill="#3a5070" font-size="7" letter-spacing="2" text-transform="uppercase">MÜNCHEN</text>
+
+        <!-- Legende -->
+        <line x1="14" y1="248" x2="26" y2="248" stroke="#c8a96e" stroke-width="2"/>
+        <text x="30" y="251" fill="#6a8098" font-size="7">Zuzug</text>
+        <line x1="14" y1="260" x2="26" y2="260" stroke="#4a90d9" stroke-width="2"/>
+        <text x="30" y="263" fill="#6a8098" font-size="7">Wegzug</text>
+
+        <!-- Highlight Aubing -->
+        <text x="140" y="272" text-anchor="middle" fill="#c8a96e" font-size="7" opacity="0.7">▲ Aubing +28.5 — stärkster Zuzug</text>
+      </svg>
+    </div>
+    <div class="concept-body">
+      <div class="concept-label">Konzept A</div>
+      <h2>Radiales Pulsdiagramm</h2>
+      <p>25 Bezirke als Strahlen im Kreis — goldene Stäbe nach außen zeigen Zuzug, blaue nach innen den Wegzug. Stablänge = normierte Rate. Jahreswechsel animiert die Stäbe.</p>
+      <div class="tags">
+        <span class="tag">Radial</span>
+        <span class="tag">Animated</span>
+        <span class="tag">D3.js</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── KONZEPT B: GRAVITATIONSFELD ──────────────────────────── -->
+  <div class="concept" data-choice="b" onclick="this.classList.toggle('selected'); recordChoice('b', this.classList.contains('selected'))">
+    <div class="viz-preview">
+      <svg width="280" height="280" viewBox="0 0 280 280">
+        <defs>
+          <radialGradient id="bgGrad2" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#0d1e35" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#060c16" stop-opacity="1"/>
+          </radialGradient>
+          <filter id="glow2">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="softglow">
+            <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <!-- Farbverlauf für Kurven -->
+          <linearGradient id="flowGold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#c8a96e" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#c8a96e" stop-opacity="0.05"/>
+          </linearGradient>
+          <linearGradient id="flowBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4a90d9" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#4a90d9" stop-opacity="0.05"/>
+          </linearGradient>
+        </defs>
+
+        <circle cx="140" cy="140" r="140" fill="url(#bgGrad2)"/>
+
+        <!-- Hintergrundringe -->
+        <circle cx="140" cy="140" r="30"  fill="none" stroke="#0e2040" stroke-width="0.5" stroke-dasharray="2,4"/>
+        <circle cx="140" cy="140" r="60"  fill="none" stroke="#0e2040" stroke-width="0.5" stroke-dasharray="2,4"/>
+        <circle cx="140" cy="140" r="90"  fill="none" stroke="#0e2040" stroke-width="0.5" stroke-dasharray="2,4"/>
+        <circle cx="140" cy="140" r="118" fill="none" stroke="#0e2040" stroke-width="0.5"/>
+
+        <!-- Bezirke als Punkte am äußeren Ring (r=118) -->
+        <!-- 25 Punkte, Farbe = Wanderungsrate -->
+        <!-- Positive Bezirke: gold, Negative: blau, Größe ~ |Wert| -->
+
+        <!-- Aubing +28.5 — größter Goldpunkt, bei ca. 302° -->
+        <circle cx="199" cy="78" r="7" fill="#f0c870" filter="url(#glow2)" opacity="0.9"/>
+        <text x="212" y="72" fill="#c8a96e" font-size="6.5" font-family="Georgia">Aubing</text>
+        <text x="212" y="80" fill="#f0c870" font-size="7" font-weight="bold">+28.5</text>
+
+        <!-- Maxvorstadt -11.4 — größter Blaupunkt, bei ca. 29° -->
+        <circle cx="197" cy="204" r="5.5" fill="#6aabf0" filter="url(#glow2)" opacity="0.9"/>
+        <text x="178" y="200" fill="#4a90d9" font-size="6.5" text-anchor="end">Maxvorstadt</text>
+        <text x="178" y="208" fill="#6aabf0" font-size="7" text-anchor="end">−11.4</text>
+
+        <!-- Thalkirchen +5.8 -->
+        <circle cx="90" cy="205" r="3.5" fill="#d4b87a" filter="url(#glow2)" opacity="0.85"/>
+
+        <!-- Untergiesing +4.8 -->
+        <circle cx="60" cy="188" r="3" fill="#d4b87a" opacity="0.8"/>
+
+        <!-- Milbertshofen -9.1 -->
+        <circle cx="162" cy="26" r="4.5" fill="#5a9fe0" filter="url(#glow2)" opacity="0.85"/>
+
+        <!-- Altstadt -8.9 -->
+        <circle cx="140" cy="22" r="4.5" fill="#5a9fe0" opacity="0.8"/>
+
+        <!-- Ludwigsvorstadt -10.3 -->
+        <circle cx="118" cy="26" r="5" fill="#5aabf0" filter="url(#glow2)" opacity="0.85"/>
+
+        <!-- Weitere mittlere Punkte -->
+        <circle cx="240" cy="125" r="2.5" fill="#3a7ab9" opacity="0.7"/>
+        <circle cx="235" cy="160" r="2" fill="#3a7ab9" opacity="0.6"/>
+        <circle cx="22" cy="148" r="3" fill="#c8a96e" opacity="0.7"/>
+        <circle cx="30" cy="115" r="2.5" fill="#c8a96e" opacity="0.65"/>
+        <circle cx="50" cy="80" r="2" fill="#3a7ab9" opacity="0.6"/>
+        <circle cx="78" cy="40" r="2.5" fill="#3a7ab9" opacity="0.65"/>
+        <circle cx="200" cy="48" r="2" fill="#c8a96e" opacity="0.6"/>
+        <circle cx="225" cy="95" r="2" fill="#3a7ab9" opacity="0.55"/>
+        <circle cx="232" cy="178" r="2" fill="#c8a96e" opacity="0.6"/>
+        <circle cx="205" cy="220" r="2.5" fill="#c8a96e" opacity="0.65"/>
+        <circle cx="165" cy="246" r="2" fill="#c8a96e" opacity="0.6"/>
+        <circle cx="120" cy="250" r="2" fill="#3a7ab9" opacity="0.6"/>
+        <circle cx="80" cy="238" r="2.5" fill="#c8a96e" opacity="0.65"/>
+        <circle cx="45" cy="215" r="2" fill="#3a7ab9" opacity="0.55"/>
+        <circle cx="22" cy="172" r="2" fill="#c8a96e" opacity="0.6"/>
+        <circle cx="26" cy="95" r="2.5" fill="#3a7ab9" opacity="0.6"/>
+        <circle cx="55" cy="56" r="2" fill="#3a7ab9" opacity="0.55"/>
+
+        <!-- Gravitationskurven: Partikel "ziehen" zu Aubing -->
+        <!-- Kurven von negativen Bezirken zum Zentrum, dann zu positiven -->
+
+        <!-- Maxvorstadt → Aubing (stärkste Wanderungsspur) -->
+        <path d="M 197 204 Q 140 140 199 78" fill="none" stroke="url(#flowGold)" stroke-width="1.5" opacity="0.6"/>
+        <path d="M 197 204 Q 155 155 199 78" fill="none" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
+
+        <!-- Altstadt → Thalkirchen -->
+        <path d="M 140 22 Q 140 140 90 205" fill="none" stroke="#c8a96e" stroke-width="1" opacity="0.4"/>
+
+        <!-- Milbertshofen → Untergiesing -->
+        <path d="M 162 26 Q 100 140 60 188" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.35"/>
+
+        <!-- Andere feine Spurlinien -->
+        <path d="M 118 26 Q 140 140 80 238" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.25"/>
+        <path d="M 240 125 Q 180 140 199 78" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.2"/>
+
+        <!-- Zentrum — Gravitationspunkt -->
+        <circle cx="140" cy="140" r="18" fill="#0a1525" stroke="#1a3050" stroke-width="0.5"/>
+        <circle cx="140" cy="140" r="12" fill="#0d1e35" stroke="#c8a96e" stroke-width="0.5" opacity="0.5"/>
+        <circle cx="140" cy="140" r="4" fill="#c8a96e" opacity="0.8" filter="url(#softglow)"/>
+        <text x="140" y="170" text-anchor="middle" fill="#2a4060" font-size="6.5" letter-spacing="1">MÜNCHEN GESAMT</text>
+        <text x="140" y="180" text-anchor="middle" fill="#1a3050" font-size="6">Saldo = 0</text>
+
+        <!-- Legende -->
+        <circle cx="20" cy="252" r="4" fill="#c8a96e" opacity="0.8"/>
+        <text x="28" y="255" fill="#6a8098" font-size="7">Zuzug-Bezirk</text>
+        <circle cx="20" cy="265" r="4" fill="#4a90d9" opacity="0.8"/>
+        <text x="28" y="268" fill="#6a8098" font-size="7">Wegzug-Bezirk</text>
+      </svg>
+    </div>
+    <div class="concept-body">
+      <div class="concept-label">Konzept B</div>
+      <h2>Gravitationsfeld</h2>
+      <p>Bezirke als Partikel im Orbit — Größe und Leuchtstärke zeigen Wanderungsintensität. Kurven verbinden Verlier- mit Gewinner-Bezirken und visualisieren den "Fluss" der Bevölkerung.</p>
+      <div class="tags">
+        <span class="tag">Particles</span>
+        <span class="tag">Force Layout</span>
+        <span class="tag">D3.js</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── KONZEPT C: STRATIGRAPHISCHER ZEITSTRAHL ──────────────── -->
+  <div class="concept" data-choice="c" onclick="this.classList.toggle('selected'); recordChoice('c', this.classList.contains('selected'))">
+    <div class="viz-preview">
+      <svg width="280" height="280" viewBox="0 0 280 280">
+        <defs>
+          <radialGradient id="bgGrad3" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#0d1e35" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#060c16" stop-opacity="1"/>
+          </radialGradient>
+          <filter id="glow3">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <clipPath id="clip1">
+            <rect x="0" y="0" width="280" height="280"/>
+          </clipPath>
+        </defs>
+
+        <rect x="0" y="0" width="280" height="280" fill="url(#bgGrad3)" rx="0"/>
+
+        <!-- Stratigraphie: Schichten = Jahre, horizontale Linien = Bezirke -->
+        <!-- Y-Achse: Bezirke (25), X-Achse: Jahre (2018-2024) -->
+
+        <!-- Hintergrundgitter -->
+        <!-- Jahre: 7 Jahre, 280/7 = 40px pro Jahr -->
+        <line x1="40" y1="20" x2="40" y2="260" stroke="#0e1e30" stroke-width="0.5"/>
+        <line x1="80" y1="20" x2="80" y2="260" stroke="#0e1e30" stroke-width="0.5"/>
+        <line x1="120" y1="20" x2="120" y2="260" stroke="#0e1e30" stroke-width="0.5"/>
+        <line x1="160" y1="20" x2="160" y2="260" stroke="#0e1e30" stroke-width="0.5"/>
+        <line x1="200" y1="20" x2="200" y2="260" stroke="#0e1e30" stroke-width="0.5"/>
+        <line x1="240" y1="20" x2="240" y2="260" stroke="#0e1e30" stroke-width="0.5"/>
+
+        <!-- Jahreslabels -->
+        <text x="20"  y="270" text-anchor="middle" fill="#1e3850" font-size="6.5">2018</text>
+        <text x="60"  y="270" text-anchor="middle" fill="#1e3850" font-size="6.5">2019</text>
+        <text x="100" y="270" text-anchor="middle" fill="#1e3850" font-size="6.5">2020</text>
+        <text x="140" y="270" text-anchor="middle" fill="#1e3850" font-size="6.5">2021</text>
+        <text x="180" y="270" text-anchor="middle" fill="#1e3850" font-size="6.5">2022</text>
+        <text x="220" y="270" text-anchor="middle" fill="#1e3850" font-size="6.5">2023</text>
+        <text x="260" y="270" text-anchor="middle" fill="#c8a96e" font-size="6.5">2024</text>
+
+        <!-- Bezirk-Zeilen: jeder Bezirk ist ein horizontaler Streifen (Höhe 9.6px) -->
+        <!-- Indikatorwert kodiert als Farbsättigung und Helligkeit -->
+
+        <!-- Hilfslinie: Nulllinie bei x=Wert=0 -->
+
+        <!-- AUBING — leuchtend goldene Zeile -->
+        <rect x="20" y="28" width="40" height="8" fill="#3a5010" rx="1" opacity="0.6"/>
+        <rect x="60" y="28" width="40" height="8" fill="#4a6418" rx="1" opacity="0.7"/>
+        <rect x="100" y="28" width="40" height="8" fill="#6a8828" rx="1" opacity="0.8"/>
+        <rect x="140" y="28" width="40" height="8" fill="#8aaa38" rx="1" opacity="0.85"/>
+        <rect x="180" y="28" width="40" height="8" fill="#b8c848" rx="1" opacity="0.9"/>
+        <rect x="220" y="28" width="40" height="8" fill="#d4b030" rx="1" opacity="0.9"/>
+        <rect x="260" y="28" width="18" height="8" fill="#f0c870" rx="1" filter="url(#glow3)"/>
+        <text x="14" y="34.5" text-anchor="end" fill="#8a9888" font-size="5.5">Aubing</text>
+
+        <!-- MAXVORSTADT — tiefblau -->
+        <rect x="20" y="38" width="40" height="8" fill="#102040" rx="1" opacity="0.7"/>
+        <rect x="60" y="38" width="40" height="8" fill="#142848" rx="1" opacity="0.8"/>
+        <rect x="100" y="38" width="40" height="8" fill="#1a3458" rx="1" opacity="0.85"/>
+        <rect x="140" y="38" width="40" height="8" fill="#1e3c68" rx="1" opacity="0.9"/>
+        <rect x="180" y="38" width="40" height="8" fill="#244878" rx="1"/>
+        <rect x="220" y="38" width="40" height="8" fill="#2a5088" rx="1"/>
+        <rect x="260" y="38" width="18" height="8" fill="#3a68a8" rx="1" filter="url(#glow3)"/>
+        <text x="14" y="44.5" text-anchor="end" fill="#8a9888" font-size="5.5">Maxvorst.</text>
+
+        <!-- THALKIRCHEN — gold, wächst -->
+        <rect x="20" y="48" width="40" height="8" fill="#2a3808" rx="1" opacity="0.5"/>
+        <rect x="60" y="48" width="40" height="8" fill="#384810" rx="1" opacity="0.6"/>
+        <rect x="100" y="48" width="40" height="8" fill="#485a18" rx="1" opacity="0.7"/>
+        <rect x="140" y="48" width="40" height="8" fill="#5a7020" rx="1" opacity="0.75"/>
+        <rect x="180" y="48" width="40" height="8" fill="#7a9030" rx="1" opacity="0.85"/>
+        <rect x="220" y="48" width="40" height="8" fill="#9ab040" rx="1" opacity="0.9"/>
+        <rect x="260" y="48" width="18" height="8" fill="#c8a050" rx="1" filter="url(#glow3)"/>
+        <text x="14" y="54.5" text-anchor="end" fill="#8a9888" font-size="5.5">Thalkirchen</text>
+
+        <!-- Restliche Bezirke als kompaktere Zeilen -->
+        <!-- Leichte Variationen für den visuellen Eindruck -->
+        <g opacity="0.6">
+          <!-- Untergiesing +4.8 — gold-neutral -->
+          <rect x="20" y="58" width="278" height="7" fill="#1a3028" rx="1"/>
+          <rect x="220" y="58" width="58" height="7" fill="#604818" rx="1"/>
+          <text x="14" y="63.5" text-anchor="end" fill="#4a6880" font-size="5">Untergiesing</text>
+
+          <!-- Allach +3.3 -->
+          <rect x="20" y="67" width="278" height="7" fill="#181e2a" rx="1"/>
+          <rect x="200" y="67" width="78" height="7" fill="#4a3808" rx="1"/>
+          <text x="14" y="72.5" text-anchor="end" fill="#4a6880" font-size="5">Allach</text>
+
+          <!-- Pasing -->
+          <rect x="20" y="76" width="278" height="7" fill="#181e2a" rx="1"/>
+          <rect x="200" y="76" width="78" height="7" fill="#3a3808" rx="1"/>
+          <text x="14" y="81.5" text-anchor="end" fill="#4a6880" font-size="5">Pasing</text>
+
+          <!-- Altstadt -8.9 — blau persistent -->
+          <rect x="20" y="85" width="278" height="7" fill="#0e1e38" rx="1"/>
+          <text x="14" y="90.5" text-anchor="end" fill="#4a6880" font-size="5">Altstadt</text>
+
+          <!-- Milbertshofen -->
+          <rect x="20" y="94" width="278" height="7" fill="#0e1e38" rx="1"/>
+          <text x="14" y="99.5" text-anchor="end" fill="#4a6880" font-size="5">Milbertshofen</text>
+
+          <!-- Schwabing-Freimann -->
+          <rect x="20" y="103" width="278" height="7" fill="#0c1c34" rx="1"/>
+          <text x="14" y="108.5" text-anchor="end" fill="#3a5870" font-size="5">Schwabing-Fr.</text>
+
+          <!-- Weitere 8 Zeilen als Muster -->
+          <rect x="20" y="112" width="278" height="7" fill="#181e28" rx="1"/>
+          <rect x="20" y="121" width="278" height="7" fill="#0e1c30" rx="1"/>
+          <rect x="20" y="130" width="278" height="7" fill="#181e28" rx="1"/>
+          <rect x="20" y="139" width="278" height="7" fill="#0e1e30" rx="1"/>
+          <rect x="20" y="148" width="278" height="7" fill="#181e24" rx="1"/>
+          <rect x="20" y="157" width="278" height="7" fill="#101820" rx="1"/>
+          <rect x="20" y="166" width="278" height="7" fill="#181e28" rx="1"/>
+          <rect x="20" y="175" width="278" height="7" fill="#0e1c30" rx="1"/>
+          <rect x="20" y="184" width="278" height="7" fill="#1a2828" rx="1"/>
+          <!-- Einige mit gold-Spots -->
+          <rect x="180" y="130" width="98" height="7" fill="#3a3000" rx="1" opacity="0.8"/>
+          <rect x="220" y="148" width="58" height="7" fill="#2a2000" rx="1" opacity="0.7"/>
+          <rect x="200" y="166" width="78" height="7" fill="#3a2800" rx="1" opacity="0.6"/>
+          <rect x="240" y="184" width="38" height="7" fill="#4a3000" rx="1" opacity="0.8"/>
+        </g>
+
+        <!-- Vertikaler Cursor: "Jetzt" = 2024 -->
+        <line x1="260" y1="20" x2="260" y2="260" stroke="#c8a96e" stroke-width="0.8" stroke-dasharray="2,3" opacity="0.5"/>
+
+        <!-- Legende unten -->
+        <rect x="20" y="205" width="30" height="7" fill="#3a5010" rx="1"/>
+        <rect x="52" y="205" width="30" height="7" fill="#f0c870" rx="1"/>
+        <text x="86" y="211" fill="#6a8098" font-size="6.5">Zuzug</text>
+
+        <rect x="20" y="216" width="30" height="7" fill="#102040" rx="1"/>
+        <rect x="52" y="216" width="30" height="7" fill="#3a68a8" rx="1"/>
+        <text x="86" y="222" fill="#6a8098" font-size="6.5">Wegzug</text>
+
+        <text x="20" y="240" fill="#2a4060" font-size="6" letter-spacing="0.5">Jede Zeile = ein Stadtbezirk · Farbe = Wanderungsrate · Zeit →</text>
+      </svg>
+    </div>
+    <div class="concept-body">
+      <div class="concept-label">Konzept C</div>
+      <h2>Stratigraphische Heatmap</h2>
+      <p>Zeit als horizontale Achse, alle 25 Bezirke als übereinanderliegende Schichten. Goldtöne = Zuzug, Blautöne = Wegzug. Muster über Zeit sofort sichtbar — wie ein geologischer Querschnitt.</p>
+      <div class="tags">
+        <span class="tag">Heatmap</span>
+        <span class="tag">Timeline</span>
+        <span class="tag">Canvas</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="recommendation">
+  <div class="rec-label">Empfehlung</div>
+  <p>Für maximale visuelle Wirkung empfehle ich <strong>Konzept A</strong> als Hauptvisualisierung — der radiale Puls ist unmittelbar lesbar und spektakulär. <strong>Konzept C</strong> ergänzt als Detailansicht für Zeitverläufe hervorragend. Konzept B bietet das höchste "Wow-Potenzial", braucht aber mehr Entwicklungsaufwand.</p>
+</div>
+
+<script>
+  const selections = {};
+  function recordChoice(choice, selected) {
+    selections[choice] = selected;
+    if (typeof window.__brainstorm !== 'undefined') {
+      window.__brainstorm.recordEvent({ type: 'click', choice, selected });
+    }
+  }
+</script>
+</body>
+</html>

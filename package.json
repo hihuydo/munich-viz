@@ -1,0 +1,7 @@
+{
+  "name": "munich-viz-shell",
+  "private": true,
+  "scripts": {
+    "serve": "python3 -m http.server 8080"
+  }
+}

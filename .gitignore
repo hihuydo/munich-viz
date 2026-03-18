@@ -1,0 +1,5 @@
+node_modules/
+binnenwanderungsziffer/node_modules/
+binnenwanderungsziffer/dist/
+.vercel
+.DS_Store
