@@ -172,7 +172,7 @@ export function Sidebar({
           <div style={{ marginTop: 10 }}>
             <TrendSparkline values={focusTrend.map(point => point.indikatorwert)} />
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 10, color: '#000000', letterSpacing: 1.2 }}>
-              <span>{focusTrend[0]?.jahr ?? years[0]}</span>
+              <span>{focusTrend[0]?.jahr ?? activeYear}</span>
               <span>{focusTrend[focusTrend.length - 1]?.jahr ?? activeYear}</span>
             </div>
           </div>
