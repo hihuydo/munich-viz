@@ -29,6 +29,7 @@ export function NodeRing({
         const r = rScale(Math.abs(d.indikatorwert))
         const color = nodeColor(d.indikatorwert)
         const isActive = d.raumbezug === activeNode
+        const isPinned = d.raumbezug === pinnedNode
         const isPulse = d.raumbezug === pulseNode && phase >= 4
         const isTop5 = top5names.has(d.raumbezug)
 
@@ -66,6 +67,14 @@ export function NodeRing({
               onPin(d.raumbezug)
             }}
           >
+            {/* Expanding pulse ring — only when pinned */}
+            {isPinned && (
+              <circle
+                r={displayR}
+                fill={color}
+                className="node-pulse-ring"
+              />
+            )}
             {/* Glow halo for top-5 */}
             <circle
               r={isTop5 ? r * 2.2 : 0}
@@ -74,12 +83,13 @@ export function NodeRing({
               filter="url(#glow-soft)"
               style={{ transition: 'opacity 400ms ease' }}
             />
-            {/* Main dot */}
+            {/* Main dot — breathes when pinned */}
             <circle
               r={displayR}
               fill={color}
               opacity={0.9}
-              style={{ transition: 'r 500ms cubic-bezier(0.33,1,0.68,1)' }}
+              className={isPinned ? 'node-breathe' : undefined}
+              style={isPinned ? undefined : { transition: 'r 500ms cubic-bezier(0.33,1,0.68,1)' }}
             />
           </g>
         )

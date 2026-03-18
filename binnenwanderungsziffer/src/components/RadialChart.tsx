@@ -8,6 +8,7 @@ import { BackgroundRings } from './BackgroundRings'
 import { CenterLabel } from './CenterLabel'
 import { CurveLayer } from './CurveLayer'
 import { NodeRing } from './NodeRing'
+import { ParticleLayer } from './ParticleLayer'
 import { Tooltip } from './Tooltip'
 
 interface Props {
@@ -107,6 +108,11 @@ export function RadialChart({ records, globalMax, jahr, phase }: Props) {
               pulseNode={pulseNode}
               onHover={setHoveredNode}
               onPin={handlePin}
+            />
+            <ParticleLayer
+              nodes={nodes}
+              dims={dims}
+              pinnedNode={pinnedNode}
             />
             <CenterLabel dims={dims} jahr={jahr} phase={phase} />
           </svg>

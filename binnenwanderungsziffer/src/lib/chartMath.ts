@@ -45,6 +45,15 @@ export function bezierPath(
   return `M${pA.x},${pA.y} Q${dims.cx},${dims.cy} ${pB.x},${pB.y}`
 }
 
+/** Path from pB → pA (used for particle flow direction) */
+export function bezierPathReverse(
+  pA: { x: number; y: number },
+  pB: { x: number; y: number },
+  dims: ChartDimensions,
+): string {
+  return `M${pB.x},${pB.y} Q${dims.cx},${dims.cy} ${pA.x},${pA.y}`
+}
+
 export function getTop5(records: BinnenwanderungRecord[]): {
   top5zuzug: BinnenwanderungRecord[]
   top5wegzug: BinnenwanderungRecord[]
