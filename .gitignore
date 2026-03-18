@@ -3,3 +3,6 @@ binnenwanderungsziffer/node_modules/
 binnenwanderungsziffer/dist/
 .vercel
 .DS_Store
+**/.superpowers/
+**/*.json.bak
+binnenwanderungsziffer/13660905-*.json
