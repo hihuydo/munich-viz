@@ -112,11 +112,8 @@ export default function App() {
       )}
 
       <ChartControls
-        years={years}
-        activeYear={resolvedYear}
         activeCategory={activeCategory}
         phase={phase}
-        onYearChange={setActiveYear}
         onCategoryChange={setActiveCategory}
       />
       <RadialChart
@@ -132,6 +129,7 @@ export default function App() {
         reducedMotion={reducedMotion}
       />
       <Sidebar
+        years={years}
         activeYear={resolvedYear}
         activeCategory={activeCategory}
         records={filtered}
@@ -139,6 +137,7 @@ export default function App() {
         activeNodeName={activeNodeName}
         activeNodeData={activeNodeData}
         isCompact={isCompact}
+        onYearChange={setActiveYear}
         onClearSelection={() => {
           setPinnedNode(null)
           setHoveredNode(null)

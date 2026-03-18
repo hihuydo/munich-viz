@@ -2,20 +2,14 @@ import type { CSSProperties } from 'react'
 import type { IntroPhase } from '@/hooks/useIntroAnimation'
 
 interface Props {
-  years: number[]
-  activeYear: number
   activeCategory: string
   phase: IntroPhase
-  onYearChange: (year: number) => void
   onCategoryChange: (cat: string) => void
 }
 
 export function ChartControls({
-  years,
-  activeYear,
   activeCategory,
   phase,
-  onYearChange,
   onCategoryChange,
 }: Props) {
   return (
@@ -28,7 +22,6 @@ export function ChartControls({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 24,
         zIndex: 5,
         opacity: phase >= 2 ? 1 : 0,
         transition: 'opacity 500ms ease 200ms',
@@ -48,25 +41,6 @@ export function ChartControls({
             {cat === 'deutsch' ? 'DEUTSCH' : 'NICHTDEUTSCH'}
           </button>
         ))}
-      </div>
-
-      {/* Year slider */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, width: 240 }}>
-        <input
-          type="range"
-          min={years[0]}
-          max={years[years.length - 1]}
-          value={activeYear}
-          step={1}
-          aria-label="Jahr auswählen"
-          onChange={e => onYearChange(Number(e.target.value))}
-          style={{ width: '100%' }}
-          className="viz-slider"
-        />
-        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-          <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[0]}</span>
-          <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[years.length - 1]}</span>
-        </div>
       </div>
     </div>
   )

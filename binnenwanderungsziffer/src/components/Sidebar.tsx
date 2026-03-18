@@ -6,6 +6,7 @@ import { districtLabel, districtNumber, getContrastPairs } from '@/lib/chartMath
 import { TrendSparkline } from './TrendSparkline'
 
 interface Props {
+  years: number[]
   activeYear: number
   activeCategory: string
   records: BinnenwanderungRecord[]
@@ -13,10 +14,12 @@ interface Props {
   activeNodeName: string | null
   activeNodeData: BinnenwanderungRecord | null
   isCompact: boolean
+  onYearChange: (year: number) => void
   onClearSelection: () => void
 }
 
 export function Sidebar({
+  years,
   activeYear,
   activeCategory,
   records,
@@ -24,6 +27,7 @@ export function Sidebar({
   activeNodeName,
   activeNodeData,
   isCompact,
+  onYearChange,
   onClearSelection,
 }: Props) {
   const ranking = [...records].sort((a, b) =>
@@ -85,6 +89,26 @@ export function Sidebar({
         zIndex: 10,
       }}
     >
+      <SectionCard title="Jahr" defaultOpen={true}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <input
+            type="range"
+            min={years[0]}
+            max={years[years.length - 1]}
+            value={activeYear}
+            step={1}
+            aria-label="Jahr auswählen"
+            onChange={e => onYearChange(Number(e.target.value))}
+            style={{ width: '100%' }}
+            className="viz-slider"
+          />
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[0]}</span>
+            <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[years.length - 1]}</span>
+          </div>
+        </div>
+      </SectionCard>
+
       <SectionCard title="Legende">
         <LegendRow color="var(--accent-green)" description="Positiver Saldo" />
         <LegendRow color="var(--accent-orange)" description="Negativer Saldo" />
