@@ -15,6 +15,7 @@ interface Props {
   activeNodeData: BinnenwanderungRecord | null
   isCompact: boolean
   onYearChange: (year: number) => void
+  onCategoryChange: (cat: string) => void
   onClearSelection: () => void
 }
 
@@ -28,6 +29,7 @@ export function Sidebar({
   activeNodeData,
   isCompact,
   onYearChange,
+  onCategoryChange,
   onClearSelection,
 }: Props) {
   const ranking = [...records].sort((a, b) =>
@@ -90,21 +92,49 @@ export function Sidebar({
       }}
     >
       <SectionCard title="Jahr" defaultOpen={true}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <input
-            type="range"
-            min={years[0]}
-            max={years[years.length - 1]}
-            value={activeYear}
-            step={1}
-            aria-label="Jahr auswählen"
-            onChange={e => onYearChange(Number(e.target.value))}
-            style={{ width: '100%' }}
-            className="viz-slider"
-          />
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[0]}</span>
-            <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[years.length - 1]}</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* Year slider */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <input
+              type="range"
+              min={years[0]}
+              max={years[years.length - 1]}
+              value={activeYear}
+              step={1}
+              aria-label="Jahr auswählen"
+              onChange={e => onYearChange(Number(e.target.value))}
+              style={{ width: '100%' }}
+              className="viz-slider"
+            />
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[0]}</span>
+              <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[years.length - 1]}</span>
+            </div>
+          </div>
+          {/* Category toggle */}
+          <div style={{ display: 'flex', gap: 6 }}>
+            {(['deutsch', 'nichtdeutsch'] as const).map(cat => (
+              <button
+                key={cat}
+                onClick={() => onCategoryChange(cat)}
+                aria-pressed={activeCategory === cat}
+                style={{
+                  flex: 1,
+                  background: activeCategory === cat ? '#000000' : 'transparent',
+                  border: '1px solid #000000',
+                  color: activeCategory === cat ? '#ffffff' : '#000000',
+                  fontSize: 9,
+                  letterSpacing: 1,
+                  padding: '5px 6px',
+                  cursor: 'pointer',
+                  borderRadius: 999,
+                  fontFamily: 'var(--font-serif)',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {cat === 'deutsch' ? 'DEUTSCH' : 'NICHTDEUTSCH'}
+              </button>
+            ))}
           </div>
         </div>
       </SectionCard>

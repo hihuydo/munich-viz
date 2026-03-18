@@ -4,7 +4,6 @@ import { useIntroAnimation } from '@/hooks/useIntroAnimation'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { RadialChart } from '@/components/RadialChart'
 import { Sidebar } from '@/components/Sidebar'
-import { ChartControls } from '@/components/ChartControls'
 
 export default function App() {
   const [activeYear, setActiveYear] = useState<number | null>(null)
@@ -111,11 +110,6 @@ export default function App() {
         </header>
       )}
 
-      <ChartControls
-        activeCategory={activeCategory}
-        phase={phase}
-        onCategoryChange={setActiveCategory}
-      />
       <RadialChart
         records={filtered}
         globalMax={globalMax}
@@ -138,6 +132,7 @@ export default function App() {
         activeNodeData={activeNodeData}
         isCompact={isCompact}
         onYearChange={setActiveYear}
+        onCategoryChange={setActiveCategory}
         onClearSelection={() => {
           setPinnedNode(null)
           setHoveredNode(null)
