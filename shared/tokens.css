@@ -2,32 +2,32 @@
   color-scheme: light;
 
   /* Backgrounds */
-  --bg-primary: #f3f4f6;
-  --bg-primary-rgb: 243, 244, 246;
-  --bg-ambient-rgb: 226, 229, 235;
-  --bg-card: #ffffff;
-  --bg-card-rgb: 255, 255, 255;
-  --bg-subtle: #ebeef2;
-  --bg-elevated: #eef1f4;
+  --bg-primary: #ffffff;
+  --bg-primary-rgb: 255, 255, 255;
+  --bg-ambient-rgb: 235, 235, 235;
+  --bg-card: #f7f7f7;
+  --bg-card-rgb: 247, 247, 247;
+  --bg-subtle: #efefef;
+  --bg-elevated: #f2f2f2;
 
   /* Borders */
-  --border-base: #d3d9e0;
-  --border-muted: #e3e7ec;
-  --border-soft: #d9dfe6;
-  --border-quiet: #e1e6eb;
-  --border-strong: #c7d0da;
+  --border-base: #d4d4d4;
+  --border-muted: #e5e5e5;
+  --border-soft: #dadada;
+  --border-quiet: #e2e2e2;
+  --border-strong: #c4c4c4;
 
   /* Text */
-  --text-strong: #1d2730;
-  --text-primary: #34424d;
-  --text-secondary: #61717f;
-  --text-soft: #748391;
-  --text-muted: #8c99a5;
-  --text-faint: #7e8e9c;
-  --text-contrast: #24313a;
+  --text-strong: #000000;
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --text-soft: #777777;
+  --text-muted: #999999;
+  --text-faint: #888888;
+  --text-contrast: #000000;
   --text-inverse: #ffffff;
 
-  /* Accent / data colors */
+  /* Accent / data colors — only green and orange are chromatic */
   --accent-green: #22c55e;
   --accent-green-rgb: 34, 197, 94;
   --accent-green-soft: #4ade80;
@@ -36,8 +36,8 @@
   --accent-orange-rgb: 249, 115, 22;
   --accent-orange-soft: #fb923c;
   --accent-orange-tint: #fed7aa;
-  --accent-blue: #4b91ca;
-  --accent-neutral: #a8b7af;
+  --accent-blue: #444444;
+  --accent-neutral: #a0a0a0;
   --accent-white: #ffffff;
 
   /* Semantic aliases */
@@ -46,11 +46,11 @@
   --color-negative-strong: var(--accent-orange);
   --color-negative-soft: var(--accent-orange-soft);
   --color-neutral: var(--accent-neutral);
-  --color-chart-line: rgba(93, 106, 122, 0.34);
+  --color-chart-line: rgba(0, 0, 0, 0.22);
   --color-glow-green: rgba(34, 197, 94, 0.38);
-  --color-shadow-card: rgba(77, 89, 107, 0.12);
-  --color-focus-ring: var(--accent-blue);
-  --color-particle-mid: var(--accent-white);
+  --color-shadow-card: rgba(0, 0, 0, 0.07);
+  --color-focus-ring: #111111;
+  --color-particle-mid: #000000;
 
   /* Typography */
   --font-serif: "Inter", "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;

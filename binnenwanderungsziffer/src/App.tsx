@@ -4,6 +4,7 @@ import { useIntroAnimation } from '@/hooks/useIntroAnimation'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { RadialChart } from '@/components/RadialChart'
 import { Sidebar } from '@/components/Sidebar'
+import { ChartControls } from '@/components/ChartControls'
 
 export default function App() {
   const [activeYear, setActiveYear] = useState<number | null>(null)
@@ -67,9 +68,7 @@ export default function App() {
   return (
     <div
       style={{
-        display: 'grid',
-        gridTemplateColumns: isCompact ? '1fr' : 'minmax(0, 1fr) 320px',
-        gridTemplateRows: isCompact ? 'minmax(52vh, 60vh) minmax(0, 1fr)' : '1fr',
+        position: 'relative',
         height: '100vh',
         width: '100vw',
         background:
@@ -77,6 +76,49 @@ export default function App() {
         overflow: 'hidden',
       }}
     >
+      {!isCompact && (
+        <header
+          style={{
+            position: 'fixed',
+            left: 24,
+            top: 24,
+            zIndex: 10,
+            fontFamily: 'var(--font-serif)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4,
+          }}
+        >
+          <div style={{ fontSize: 12, letterSpacing: 2.6, color: 'var(--text-primary)' }}>
+            BINNENWANDERUNG
+          </div>
+          <div style={{ fontSize: 11, letterSpacing: 1.2, color: 'var(--text-secondary)' }}>
+            MÜNCHEN · STADTBEZIRKE
+          </div>
+          <a
+            href="../../index.html"
+            style={{
+              fontSize: 9,
+              letterSpacing: 1.4,
+              color: 'var(--text-muted)',
+              marginTop: 6,
+              display: 'inline-block',
+              textDecoration: 'none',
+            }}
+          >
+            ← Alle Visualisierungen
+          </a>
+        </header>
+      )}
+
+      <ChartControls
+        years={years}
+        activeYear={resolvedYear}
+        activeCategory={activeCategory}
+        phase={phase}
+        onYearChange={setActiveYear}
+        onCategoryChange={setActiveCategory}
+      />
       <RadialChart
         records={filtered}
         globalMax={globalMax}
@@ -84,22 +126,19 @@ export default function App() {
         phase={phase}
         hoveredNode={hoveredNode}
         pinnedNode={pinnedNode}
+        sidebarWidth={isCompact ? 0 : 296}
         onHoverChange={setHoveredNode}
         onPinChange={setPinnedNode}
         reducedMotion={reducedMotion}
       />
       <Sidebar
-        years={years}
         activeYear={resolvedYear}
         activeCategory={activeCategory}
         records={filtered}
         allRecords={allRecords}
-        phase={phase}
         activeNodeName={activeNodeName}
         activeNodeData={activeNodeData}
         isCompact={isCompact}
-        onYearChange={setActiveYear}
-        onCategoryChange={setActiveCategory}
         onClearSelection={() => {
           setPinnedNode(null)
           setHoveredNode(null)

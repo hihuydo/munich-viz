@@ -74,7 +74,7 @@ export function CurveLayer({
         if (phase < 3) {
           opacity = 0
         } else if (isInteracting) {
-          opacity = isRelated ? pair.opacity : pair.opacity * 0.1
+          opacity = isRelated ? pair.opacity : pair.opacity * 0.35
         } else {
           opacity = pair.opacity
         }

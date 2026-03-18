@@ -63,7 +63,7 @@ body {
 input.viz-slider {
   -webkit-appearance: none;
   height: 2px;
-  background: var(--bg-subtle);
+  background: #000000;
   border-radius: 1px;
   outline: none;
 }
@@ -71,22 +71,20 @@ input.viz-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 12px; height: 12px;
   border-radius: 50%;
-  background: var(--accent-green);
+  background: #000000;
   cursor: pointer;
-  box-shadow: 0 0 8px var(--color-glow-green);
 }
 input.viz-slider::-moz-range-track {
   height: 2px;
-  background: var(--bg-subtle);
+  background: #000000;
   border-radius: 1px;
   border: none;
 }
 input.viz-slider::-moz-range-thumb {
   width: 12px; height: 12px;
   border-radius: 50%;
-  background: var(--accent-green);
+  background: #000000;
   cursor: pointer;
-  box-shadow: 0 0 8px var(--color-glow-green);
   border: none;
 }
 

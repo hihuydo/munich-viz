@@ -15,10 +15,10 @@ export function useIntroAnimation(): IntroPhase {
     }
 
     const t1 = setTimeout(() => setPhase(1), 0)
-    const t2 = setTimeout(() => setPhase(2), 500)
-    const t3 = setTimeout(() => setPhase(3), 1500)
-    const t4 = setTimeout(() => setPhase(4), 2500)
-    const t5 = setTimeout(() => setPhase(5), 3000)
+    const t2 = setTimeout(() => setPhase(2), 300)
+    const t3 = setTimeout(() => setPhase(3), 750)
+    const t4 = setTimeout(() => setPhase(4), 1200)
+    const t5 = setTimeout(() => setPhase(5), 1500)
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5) }
   }, [prefersReducedMotion])
 

@@ -18,6 +18,7 @@ interface Props {
   phase: IntroPhase
   hoveredNode: string | null
   pinnedNode: string | null
+  sidebarWidth: number
   onHoverChange: (raumbezug: string | null) => void
   onPinChange: (raumbezug: string | null) => void
   reducedMotion: boolean
@@ -30,6 +31,7 @@ export function RadialChart({
   phase,
   hoveredNode,
   pinnedNode,
+  sidebarWidth,
   onHoverChange,
   onPinChange,
   reducedMotion,
@@ -140,6 +142,7 @@ export function RadialChart({
               data={activeNodeData}
               containerWidth={dims.width}
               containerHeight={dims.height}
+              rightPad={sidebarWidth}
             />
           )}
         </>

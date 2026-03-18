@@ -37,7 +37,7 @@ export function NodeRing({
         if (phase < 2) {
           nodeOpacity = 0
         } else if (isInteracting) {
-          nodeOpacity = isActive ? 1 : 0.15
+          nodeOpacity = isActive ? 1 : 0.45
         } else {
           nodeOpacity = 1
         }
