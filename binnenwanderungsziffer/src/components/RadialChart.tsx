@@ -22,6 +22,7 @@ interface Props {
   onHoverChange: (raumbezug: string | null) => void
   onPinChange: (raumbezug: string | null) => void
   reducedMotion: boolean
+  isCompact: boolean
 }
 
 export function RadialChart({
@@ -35,6 +36,7 @@ export function RadialChart({
   onHoverChange,
   onPinChange,
   reducedMotion,
+  isCompact,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [dims, setDims] = useState<ChartDimensions | null>(null)
@@ -128,6 +130,7 @@ export function RadialChart({
               pulseNode={pulseNode}
               onHover={onHoverChange}
               onPin={handlePin}
+              isCompact={isCompact}
             />
             <ParticleLayer
               nodes={nodes}
@@ -137,7 +140,7 @@ export function RadialChart({
             <CenterLabel dims={dims} jahr={jahr} phase={phase} />
           </svg>
 
-          {activeNodeData && (
+          {!isCompact && activeNodeData && (
             <Tooltip
               data={activeNodeData}
               containerWidth={dims.width}

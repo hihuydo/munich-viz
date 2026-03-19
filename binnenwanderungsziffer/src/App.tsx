@@ -130,6 +130,7 @@ export default function App() {
         onHoverChange={setHoveredNode}
         onPinChange={handlePinChange}
         reducedMotion={reducedMotion}
+        isCompact={isCompact}
       />
       <Sidebar
         years={years}
