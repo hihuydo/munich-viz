@@ -283,7 +283,7 @@ export function Sidebar({
       style={{
         maxHeight: snapHeight,
         transition: 'max-height 0.28s ease',
-        overflowY: (sheetState === 'controls' || sheetState === 'full') ? 'auto' : 'hidden',
+        overflowY: 'hidden',
         borderRadius: '12px 12px 0 0',
         borderTop: '2px solid #000000',
         background: '#ffffff',
@@ -297,7 +297,7 @@ export function Sidebar({
         flexDirection: 'column',
       }}
     >
-      {/* Handle button */}
+      {/* Handle button — stays pinned at top even when content scrolls */}
       <button
         onClick={cycleSheet}
         aria-label={sheetState === 'peek' ? 'Panel aufklappen' : sheetState === 'full' ? 'Panel einklappen' : 'Panel maximieren'}
@@ -308,12 +308,15 @@ export function Sidebar({
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 6,
-          background: 'none',
+          gap: 5,
+          background: '#ffffff',
           border: 'none',
           cursor: 'pointer',
-          padding: '10px 16px',
+          padding: '10px 16px 8px',
           flexShrink: 0,
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
         }}
       >
         <div style={{ width: 32, height: 3, background: '#cccccc', borderRadius: 2 }} />
@@ -322,6 +325,21 @@ export function Sidebar({
             {activeYear} · {activeCategory === 'deutsch' ? 'DEUTSCH' : 'NICHTDEUTSCH'}
           </div>
         )}
+        {/* State dots */}
+        <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+          {(['peek', 'controls', 'full'] as const).map(s => (
+            <div
+              key={s}
+              style={{
+                width: s === sheetState ? 14 : 5,
+                height: 5,
+                borderRadius: 3,
+                background: s === sheetState ? '#000000' : '#cccccc',
+                transition: 'width 0.2s ease, background 0.2s ease',
+              }}
+            />
+          ))}
+        </div>
       </button>
 
       {/* Peek content */}
@@ -336,115 +354,123 @@ export function Sidebar({
         </div>
       )}
 
-      {/* Controls + Full content */}
+      {/* Controls + Full content — scrollable inner wrapper with fade hint */}
       {(sheetState === 'controls' || sheetState === 'full') && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '0 12px 16px', flex: 1, minHeight: 0 }}>
+        <div style={{
+          overflowY: 'auto',
+          flex: 1,
+          minHeight: 0,
+          WebkitMaskImage: 'linear-gradient(to bottom, black calc(100% - 40px), transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black calc(100% - 40px), transparent 100%)',
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '0 12px 48px' }}>
 
-          {/* District focus — shown at top when a node is selected */}
-          {focusRecord && activeNodeName && (
-            <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
-                <div>
-                  <div style={{ fontSize: 15, color: '#000000', lineHeight: 1.4 }}>{districtLabel(focusRecord.raumbezug)}</div>
-                  <div style={{ fontSize: 10, color: '#000000', letterSpacing: 1.4, marginTop: 3 }}>RANG {focusRank ?? '—'} · {activeYear}</div>
+            {/* District focus — shown at top when a node is selected */}
+            {focusRecord && activeNodeName && (
+              <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
+                  <div>
+                    <div style={{ fontSize: 15, color: '#000000', lineHeight: 1.4 }}>{districtLabel(focusRecord.raumbezug)}</div>
+                    <div style={{ fontSize: 10, color: '#000000', letterSpacing: 1.4, marginTop: 3 }}>RANG {focusRank ?? '—'} · {activeYear}</div>
+                  </div>
+                  <button
+                    onClick={onClearSelection}
+                    style={{ border: '1px solid #000000', background: 'transparent', color: '#000000', fontSize: 10, letterSpacing: 1, padding: '6px 10px', borderRadius: 999, cursor: 'pointer', flexShrink: 0 }}
+                  >
+                    LÖSEN
+                  </button>
                 </div>
-                <button
-                  onClick={onClearSelection}
-                  style={{ border: '1px solid #000000', background: 'transparent', color: '#000000', fontSize: 10, letterSpacing: 1, padding: '6px 10px', borderRadius: 999, cursor: 'pointer', flexShrink: 0 }}
-                >
-                  LÖSEN
-                </button>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 5, marginTop: 8 }}>
-                <MetricPill label="Aktuell" value={formatValue(focusRecord.indikatorwert)} />
-                <MetricPill label="Vorjahr" value={delta === null ? '—' : formatValue(delta)} />
-                <MetricPill label="Langfr." value={trendAverage === null ? '—' : formatValue(trendAverage)} />
-              </div>
-            </div>
-          )}
-
-          {/* Year slider */}
-          <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <input
-              type="range"
-              min={years[0]}
-              max={years[years.length - 1]}
-              value={activeYear}
-              step={1}
-              aria-label="Jahr auswählen"
-              onChange={e => onYearChange(Number(e.target.value))}
-              style={{ width: '100%' }}
-              className="viz-slider"
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[0]}</span>
-              <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[years.length - 1]}</span>
-            </div>
-            <div style={{ display: 'flex', gap: 6 }}>
-              {(['deutsch', 'nichtdeutsch'] as const).map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => onCategoryChange(cat)}
-                  aria-pressed={activeCategory === cat}
-                  aria-label={cat === 'deutsch' ? 'Deutsch' : 'Nichtdeutsch'}
-                  style={{
-                    flex: 1,
-                    background: activeCategory === cat ? '#000000' : 'transparent',
-                    border: '1px solid #000000',
-                    color: activeCategory === cat ? '#ffffff' : '#000000',
-                    fontSize: 9,
-                    letterSpacing: 1,
-                    padding: '9px 10px',
-                    cursor: 'pointer',
-                    borderRadius: 999,
-                    fontFamily: 'var(--font-serif)',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  {cat === 'deutsch' ? 'DEUTSCH' : 'NICHT-DEUTSCH'}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* KPI grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5 }}>
-            <KpiCard label="Top Plus" value={strongestInflow ? formatValue(strongestInflow.indikatorwert) : '—'} accent="var(--accent-green)" detail={strongestInflow ? districtLabel(strongestInflow.raumbezug) : '—'} note="Saldo je 1.000 Ew." />
-            <KpiCard label="Top Minus" value={strongestOutflow ? formatValue(strongestOutflow.indikatorwert) : '—'} accent="var(--accent-orange)" detail={strongestOutflow ? districtLabel(strongestOutflow.raumbezug) : '—'} note="Saldo je 1.000 Ew." />
-            <KpiCard label="Im Plus" value={`${positives}/${records.length}`} accent="var(--text-contrast)" detail={`${negatives} im Minus`} note="Bezirke" />
-            <KpiCard label="Schnitt" value={formatValue(average)} accent="var(--accent-blue)" detail="Saldo je 1.000 Ew." note="Normiert" />
-          </div>
-        </div>
-      )}
-
-      {/* Full-only content */}
-      {sheetState === 'full' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '0 12px 20px' }}>
-          {focusRecord && (
-            <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px' }}>
-              <div style={{ fontSize: 10, letterSpacing: 1.2, color: '#000000', marginBottom: 6 }}>TREND · {districtLabel(focusRecord.raumbezug)}</div>
-              <TrendSparkline values={focusTrend.map(p => p.indikatorwert)} />
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 10, color: '#000000', letterSpacing: 1.2 }}>
-                <span>{focusTrend[0]?.jahr ?? activeYear}</span>
-                <span>{focusTrend[focusTrend.length - 1]?.jahr ?? activeYear}</span>
-              </div>
-            </div>
-          )}
-
-          <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px' }}>
-            <div style={{ fontSize: 10, letterSpacing: 1.2, color: '#000000', marginBottom: 8 }}>KONTRASTE</div>
-            {contrastPairs.map(pair => (
-              <div key={`${pair.positive.raumbezug}-${pair.negative.raumbezug}`} style={{ display: 'grid', gap: 3, padding: '6px 0', borderBottom: '1px solid var(--border-quiet)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'baseline' }}>
-                  <span style={{ color: 'var(--accent-green)', fontSize: 12 }}>{districtLabel(pair.positive.raumbezug)}</span>
-                  <span style={{ color: 'var(--accent-orange)', fontSize: 12, textAlign: 'right' }}>{districtLabel(pair.negative.raumbezug)}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 11 }}>
-                  <span style={{ color: 'var(--accent-green)' }}>{formatValue(pair.positive.indikatorwert)}</span>
-                  <span style={{ color: 'var(--accent-orange)' }}>{formatValue(pair.negative.indikatorwert)}</span>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 5, marginTop: 8 }}>
+                  <MetricPill label="Aktuell" value={formatValue(focusRecord.indikatorwert)} />
+                  <MetricPill label="Vorjahr" value={delta === null ? '—' : formatValue(delta)} />
+                  <MetricPill label="Langfr." value={trendAverage === null ? '—' : formatValue(trendAverage)} />
                 </div>
               </div>
-            ))}
+            )}
+
+            {/* Year slider */}
+            <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <input
+                type="range"
+                min={years[0]}
+                max={years[years.length - 1]}
+                value={activeYear}
+                step={1}
+                aria-label="Jahr auswählen"
+                onChange={e => onYearChange(Number(e.target.value))}
+                style={{ width: '100%' }}
+                className="viz-slider"
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[0]}</span>
+                <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[years.length - 1]}</span>
+              </div>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {(['deutsch', 'nichtdeutsch'] as const).map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => onCategoryChange(cat)}
+                    aria-pressed={activeCategory === cat}
+                    aria-label={cat === 'deutsch' ? 'Deutsch' : 'Nichtdeutsch'}
+                    style={{
+                      flex: 1,
+                      background: activeCategory === cat ? '#000000' : 'transparent',
+                      border: '1px solid #000000',
+                      color: activeCategory === cat ? '#ffffff' : '#000000',
+                      fontSize: 9,
+                      letterSpacing: 1,
+                      padding: '9px 10px',
+                      cursor: 'pointer',
+                      borderRadius: 999,
+                      fontFamily: 'var(--font-serif)',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {cat === 'deutsch' ? 'DEUTSCH' : 'NICHT-DEUTSCH'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* KPI grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5 }}>
+              <KpiCard label="Top Plus" value={strongestInflow ? formatValue(strongestInflow.indikatorwert) : '—'} accent="var(--accent-green)" detail={strongestInflow ? districtLabel(strongestInflow.raumbezug) : '—'} note="Saldo je 1.000 Ew." />
+              <KpiCard label="Top Minus" value={strongestOutflow ? formatValue(strongestOutflow.indikatorwert) : '—'} accent="var(--accent-orange)" detail={strongestOutflow ? districtLabel(strongestOutflow.raumbezug) : '—'} note="Saldo je 1.000 Ew." />
+              <KpiCard label="Im Plus" value={`${positives}/${records.length}`} accent="var(--text-contrast)" detail={`${negatives} im Minus`} note="Bezirke" />
+              <KpiCard label="Schnitt" value={formatValue(average)} accent="var(--accent-blue)" detail="Saldo je 1.000 Ew." note="Normiert" />
+            </div>
+
+            {/* Full-only: trend sparkline + contrasts */}
+            {sheetState === 'full' && (
+              <>
+                {focusRecord && (
+                  <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px' }}>
+                    <div style={{ fontSize: 10, letterSpacing: 1.2, color: '#000000', marginBottom: 6 }}>TREND · {districtLabel(focusRecord.raumbezug)}</div>
+                    <TrendSparkline values={focusTrend.map(p => p.indikatorwert)} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 10, color: '#000000', letterSpacing: 1.2 }}>
+                      <span>{focusTrend[0]?.jahr ?? activeYear}</span>
+                      <span>{focusTrend[focusTrend.length - 1]?.jahr ?? activeYear}</span>
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px' }}>
+                  <div style={{ fontSize: 10, letterSpacing: 1.2, color: '#000000', marginBottom: 8 }}>KONTRASTE</div>
+                  {contrastPairs.map(pair => (
+                    <div key={`${pair.positive.raumbezug}-${pair.negative.raumbezug}`} style={{ display: 'grid', gap: 3, padding: '6px 0', borderBottom: '1px solid var(--border-quiet)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'baseline' }}>
+                        <span style={{ color: 'var(--accent-green)', fontSize: 12 }}>{districtLabel(pair.positive.raumbezug)}</span>
+                        <span style={{ color: 'var(--accent-orange)', fontSize: 12, textAlign: 'right' }}>{districtLabel(pair.negative.raumbezug)}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 11 }}>
+                        <span style={{ color: 'var(--accent-green)' }}>{formatValue(pair.positive.indikatorwert)}</span>
+                        <span style={{ color: 'var(--accent-orange)' }}>{formatValue(pair.negative.indikatorwert)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
