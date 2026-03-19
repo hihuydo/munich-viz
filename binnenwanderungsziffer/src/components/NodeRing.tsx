@@ -11,11 +11,12 @@ interface Props {
   pulseNode: string | null
   onHover: (raumbezug: string | null) => void
   onPin: (raumbezug: string | null) => void
+  isCompact: boolean
 }
 
 export function NodeRing({
   nodes, rScale, phase, hoveredNode, pinnedNode,
-  pulseNode, onHover, onPin,
+  pulseNode, onHover, onPin, isCompact,
 }: Props) {
   const { top5zuzug, top5wegzug } = getTop5(nodes)
   const top5names = new Set([...top5zuzug, ...top5wegzug].map(d => d.raumbezug))
@@ -89,6 +90,14 @@ export function NodeRing({
               }
             }}
           >
+            {/* Invisible tap target — wider hit area on mobile */}
+            {isCompact && (
+              <circle
+                r={r + 8}
+                fill="transparent"
+                style={{ pointerEvents: 'all' }}
+              />
+            )}
             {/* Expanding pulse ring — when hovered or pinned */}
             {isActive && (
               <circle
