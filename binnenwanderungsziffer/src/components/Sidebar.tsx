@@ -283,7 +283,7 @@ export function Sidebar({
       style={{
         maxHeight: snapHeight,
         transition: 'max-height 0.28s ease',
-        overflowY: sheetState === 'full' ? 'auto' : 'hidden',
+        overflowY: (sheetState === 'controls' || sheetState === 'full') ? 'auto' : 'hidden',
         borderRadius: '12px 12px 0 0',
         borderTop: '2px solid #000000',
         background: '#ffffff',

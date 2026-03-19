@@ -41,7 +41,7 @@ export default function App() {
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [])
+  }, [isCompact])
 
   const resolvedYear = activeYear ?? years[years.length - 1] ?? 2024
   const activeNodeName = pinnedNode ?? hoveredNode

@@ -199,9 +199,6 @@ input.viz-slider::-moz-range-thumb {
   .node-inline-label {
     display: none;
   }
-}
-
-@media (max-width: 768px) {
   input.viz-slider::-webkit-slider-thumb {
     width: 20px;
     height: 20px;
