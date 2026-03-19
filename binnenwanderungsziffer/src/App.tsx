@@ -73,11 +73,16 @@ export default function App() {
     )
   }
 
+  const SHEET_HEIGHTS = { peek: '12vh', controls: '38vh', full: '72vh' } as const
+  const chartAreaHeight = isCompact
+    ? `calc(100dvh - ${SHEET_HEIGHTS[sheetState]})`
+    : '100dvh'
+
   return (
     <div
       style={{
         position: 'relative',
-        height: '100vh',
+        height: '100dvh',
         width: '100vw',
         background:
           'radial-gradient(circle at top, rgba(var(--bg-ambient-rgb), 0.52), transparent 38%), var(--bg-primary)',
@@ -119,19 +124,30 @@ export default function App() {
         </header>
       )}
 
-      <RadialChart
-        records={filtered}
-        globalMax={globalMax}
-        jahr={resolvedYear}
-        phase={phase}
-        hoveredNode={hoveredNode}
-        pinnedNode={pinnedNode}
-        sidebarWidth={isCompact ? 0 : 296}
-        onHoverChange={setHoveredNode}
-        onPinChange={handlePinChange}
-        reducedMotion={reducedMotion}
-        isCompact={isCompact}
-      />
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: chartAreaHeight,
+          transition: isCompact ? 'height 0.28s ease' : undefined,
+        }}
+      >
+        <RadialChart
+          records={filtered}
+          globalMax={globalMax}
+          jahr={resolvedYear}
+          phase={phase}
+          hoveredNode={hoveredNode}
+          pinnedNode={pinnedNode}
+          sidebarWidth={isCompact ? 0 : 296}
+          onHoverChange={setHoveredNode}
+          onPinChange={handlePinChange}
+          reducedMotion={reducedMotion}
+          isCompact={isCompact}
+        />
+      </div>
       <Sidebar
         years={years}
         activeYear={resolvedYear}
