@@ -195,8 +195,19 @@ input.viz-slider::-moz-range-thumb {
   }
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 768px) {
   .node-inline-label {
     display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  input.viz-slider::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+  }
+  input.viz-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
   }
 }

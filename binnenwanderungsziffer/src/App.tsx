@@ -17,7 +17,7 @@ export default function App() {
   )
 
   const phase = useIntroAnimation()
-  const isCompact = useMediaQuery('(max-width: 1080px)')
+  const isCompact = useMediaQuery('(max-width: 768px)')
   const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
 
   useEffect(() => {
