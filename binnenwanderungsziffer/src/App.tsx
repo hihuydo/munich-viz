@@ -10,6 +10,7 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState('deutsch')
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const [pinnedNode, setPinnedNode] = useState<string | null>(null)
+  const [sheetState, setSheetState] = useState<'peek' | 'controls' | 'full'>('peek')
 
   const { filtered, allRecords, globalMax, years, isLoading, error } = useChartData(
     activeYear ?? 2024,
@@ -33,7 +34,7 @@ export default function App() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setPinnedNode(null)
+        handlePinChange(null)
         setHoveredNode(null)
       }
     }
@@ -47,6 +48,14 @@ export default function App() {
   const activeNodeData = activeNodeName
     ? filtered.find(record => record.raumbezug === activeNodeName) ?? null
     : null
+
+  function handlePinChange(node: string | null) {
+    setPinnedNode(node)
+    if (isCompact) {
+      if (node !== null) setSheetState('controls')
+      else setSheetState('peek')
+    }
+  }
 
   if (error) {
     return (
@@ -119,7 +128,7 @@ export default function App() {
         pinnedNode={pinnedNode}
         sidebarWidth={isCompact ? 0 : 296}
         onHoverChange={setHoveredNode}
-        onPinChange={setPinnedNode}
+        onPinChange={handlePinChange}
         reducedMotion={reducedMotion}
       />
       <Sidebar
@@ -131,12 +140,11 @@ export default function App() {
         activeNodeName={activeNodeName}
         activeNodeData={activeNodeData}
         isCompact={isCompact}
+        sheetState={sheetState}
+        onSheetStateChange={setSheetState}
         onYearChange={setActiveYear}
         onCategoryChange={setActiveCategory}
-        onClearSelection={() => {
-          setPinnedNode(null)
-          setHoveredNode(null)
-        }}
+        onClearSelection={() => handlePinChange(null)}
       />
     </div>
   )
