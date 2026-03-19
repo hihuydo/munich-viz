@@ -17,6 +17,8 @@ interface Props {
   onYearChange: (year: number) => void
   onCategoryChange: (cat: string) => void
   onClearSelection: () => void
+  sheetState: 'peek' | 'controls' | 'full'
+  onSheetStateChange: (state: 'peek' | 'controls' | 'full') => void
 }
 
 export function Sidebar({
@@ -31,6 +33,8 @@ export function Sidebar({
   onYearChange,
   onCategoryChange,
   onClearSelection,
+  sheetState,
+  onSheetStateChange,
 }: Props) {
   const ranking = [...records].sort((a, b) =>
     b.indikatorwert - a.indikatorwert ||
@@ -69,32 +73,298 @@ export function Sidebar({
 
   const contrastPairs = getContrastPairs(records, activeNodeName).slice(0, 4)
 
+  const SHEET_CYCLE = { peek: 'controls', controls: 'full', full: 'peek' } as const
+
+  function cycleSheet() {
+    onSheetStateChange(SHEET_CYCLE[sheetState])
+  }
+
+  const snapHeight = { peek: '12vh', controls: '38vh', full: '72vh' }[sheetState]
+
+  if (!isCompact) {
+    return (
+      <aside
+        style={{
+          position: 'fixed',
+          right: 16,
+          top: 16,
+          bottom: 16,
+          width: 272,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '18px 14px',
+          gap: 6,
+          overflowY: 'auto',
+          fontFamily: 'var(--font-serif)',
+          color: 'var(--text-primary)',
+          background: 'rgba(var(--bg-primary-rgb), 0.82)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          borderRadius: 4,
+          zIndex: 10,
+        }}
+      >
+        <SectionCard title="Jahr" defaultOpen={true}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {/* Year slider */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <input
+                type="range"
+                min={years[0]}
+                max={years[years.length - 1]}
+                value={activeYear}
+                step={1}
+                aria-label="Jahr auswählen"
+                onChange={e => onYearChange(Number(e.target.value))}
+                style={{ width: '100%' }}
+                className="viz-slider"
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[0]}</span>
+                <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[years.length - 1]}</span>
+              </div>
+            </div>
+            {/* Category toggle */}
+            <div style={{ display: 'flex', gap: 6 }}>
+              {(['deutsch', 'nichtdeutsch'] as const).map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => onCategoryChange(cat)}
+                  aria-pressed={activeCategory === cat}
+                  style={{
+                    flex: 1,
+                    background: activeCategory === cat ? '#000000' : 'transparent',
+                    border: '1px solid #000000',
+                    color: activeCategory === cat ? '#ffffff' : '#000000',
+                    fontSize: 9,
+                    letterSpacing: 1,
+                    padding: '5px 6px',
+                    cursor: 'pointer',
+                    borderRadius: 999,
+                    fontFamily: 'var(--font-serif)',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {cat === 'deutsch' ? 'DEUTSCH' : 'NICHTDEUTSCH'}
+                </button>
+              ))}
+            </div>
+          </div>
+        </SectionCard>
+
+        <SectionCard title="Legende">
+          <LegendRow color="var(--accent-green)" description="Positiver Saldo" />
+          <LegendRow color="var(--accent-orange)" description="Negativer Saldo" />
+          <LegendRow color="var(--text-contrast)" description="Kontrast-Linien" shape="line" />
+          <LegendRow color="var(--text-primary)" description="Größe = Intensität" shape="rings" />
+        </SectionCard>
+
+        <SectionCard title="Lagebild">
+          <KpiGrid>
+            <KpiCard
+              label="Top Plus"
+              value={strongestInflow ? formatValue(strongestInflow.indikatorwert) : '—'}
+              accent="var(--accent-green)"
+              detail={strongestInflow ? districtLabel(strongestInflow.raumbezug) : 'Keine positive Ausprägung'}
+              note="Saldo je 1.000 Ew."
+            />
+            <KpiCard
+              label="Top Minus"
+              value={strongestOutflow ? formatValue(strongestOutflow.indikatorwert) : '—'}
+              accent="var(--accent-orange)"
+              detail={strongestOutflow ? districtLabel(strongestOutflow.raumbezug) : 'Keine negative Ausprägung'}
+              note="Saldo je 1.000 Ew."
+            />
+            <KpiCard
+              label="Im Plus"
+              value={`${positives}/${records.length}`}
+              accent="var(--text-contrast)"
+              detail={`${negatives} Bezirke im Minus`}
+              note="Anzahl Bezirke"
+            />
+            <KpiCard
+              label="Durchschnitt"
+              value={formatValue(average)}
+              accent="var(--accent-blue)"
+              detail="Saldo je 1.000 Ew."
+              note="Normierter Kennwert"
+            />
+          </KpiGrid>
+        </SectionCard>
+
+        {focusRecord && (
+          <SectionCard title={activeNodeName ? 'Bezirk im Fokus' : 'Spotlight'}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ fontSize: 16, color: '#000000', lineHeight: 1.4 }}>
+                  {districtLabel(focusRecord.raumbezug)}
+                </div>
+                <div style={{ fontSize: 10, color: '#000000', letterSpacing: 1.6, marginTop: 5 }}>
+                  RANG {focusRank ?? '—'} IM JAHR {activeYear}
+                </div>
+              </div>
+              {activeNodeName && (
+                <button
+                  onClick={onClearSelection}
+                  style={{
+                    border: '1px solid #000000',
+                    background: 'transparent',
+                    color: '#000000',
+                    fontSize: 10,
+                    letterSpacing: 1,
+                    padding: '6px 10px',
+                    borderRadius: 999,
+                    cursor: 'pointer',
+                  }}
+                >
+                  LÖSEN
+                </button>
+              )}
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                gap: 6,
+                marginTop: 8,
+              }}
+            >
+              <MetricPill label="Aktuell" value={formatValue(focusRecord.indikatorwert)} />
+              <MetricPill label="Zum Vorjahr" value={delta === null ? '—' : formatValue(delta)} />
+              <MetricPill label="Langfr. Schnitt" value={trendAverage === null ? '—' : formatValue(trendAverage)} />
+            </div>
+
+            <div style={{ marginTop: 10 }}>
+              <TrendSparkline values={focusTrend.map(point => point.indikatorwert)} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 10, color: '#000000', letterSpacing: 1.2 }}>
+                <span>{focusTrend[0]?.jahr ?? activeYear}</span>
+                <span>{focusTrend[focusTrend.length - 1]?.jahr ?? activeYear}</span>
+              </div>
+            </div>
+          </SectionCard>
+        )}
+
+        <SectionCard title={activeNodeName ? 'Kontrastlinien' : 'Prägende Kontraste'} defaultOpen={false}>
+          <div style={{ display: 'grid', gap: 2 }}>
+            {contrastPairs.map(pair => (
+              <div
+                key={`${pair.positive.raumbezug}-${pair.negative.raumbezug}`}
+                style={{
+                  display: 'grid',
+                  gap: 3,
+                  padding: '8px 0',
+                  borderBottom: '1px solid var(--border-quiet)',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'baseline' }}>
+                  <span style={{ color: 'var(--accent-green)', fontSize: 12, lineHeight: 1.5 }}>
+                    {districtLabel(pair.positive.raumbezug)}
+                  </span>
+                  <span style={{ color: 'var(--accent-orange)', fontSize: 12, lineHeight: 1.5, textAlign: 'right' }}>
+                    {districtLabel(pair.negative.raumbezug)}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 11 }}>
+                  <span style={{ color: 'var(--accent-green)' }}>{formatValue(pair.positive.indikatorwert)}</span>
+                  <span style={{ color: 'var(--accent-orange)' }}>{formatValue(pair.negative.indikatorwert)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </SectionCard>
+      </aside>
+    )
+  }
+
+  // Mobile bottom sheet
   return (
     <aside
       style={{
+        maxHeight: snapHeight,
+        transition: 'max-height 0.28s ease',
+        overflowY: sheetState === 'full' ? 'auto' : 'hidden',
+        borderRadius: '12px 12px 0 0',
+        borderTop: '2px solid #000000',
+        background: '#ffffff',
         position: 'fixed',
-        ...(isCompact
-          ? { left: 0, right: 0, bottom: 0, maxHeight: '52vh' }
-          : { right: 16, top: 16, bottom: 16, width: 272 }),
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 10,
+        fontFamily: 'var(--font-serif)',
         display: 'flex',
         flexDirection: 'column',
-        padding: isCompact ? '14px 14px 20px' : '18px 14px',
-        gap: 6,
-        overflowY: 'auto',
-        fontFamily: 'var(--font-serif)',
-        color: 'var(--text-primary)',
-        background: 'rgba(var(--bg-primary-rgb), 0.82)',
-        backdropFilter: 'blur(14px)',
-        WebkitBackdropFilter: 'blur(14px)',
-
-        borderRadius: isCompact ? '12px 12px 0 0' : 4,
-        zIndex: 10,
       }}
     >
-      <SectionCard title="Jahr" defaultOpen={true}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* Handle button */}
+      <button
+        onClick={cycleSheet}
+        aria-label={sheetState === 'peek' ? 'Panel aufklappen' : sheetState === 'full' ? 'Panel einklappen' : 'Panel maximieren'}
+        style={{
+          width: '100%',
+          minHeight: 44,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 6,
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '10px 16px',
+          flexShrink: 0,
+        }}
+      >
+        <div style={{ width: 32, height: 3, background: '#cccccc', borderRadius: 2 }} />
+        {sheetState === 'peek' && (
+          <div style={{ fontSize: 10, letterSpacing: 1.4, color: '#555555' }}>
+            {activeYear} · {activeCategory === 'deutsch' ? 'DEUTSCH' : 'NICHTDEUTSCH'}
+          </div>
+        )}
+      </button>
+
+      {/* Peek content */}
+      {sheetState === 'peek' && (
+        <div style={{ padding: '0 16px 14px', display: 'flex', justifyContent: 'center' }}>
+          <a
+            href="../../index.html"
+            style={{ fontSize: 10, letterSpacing: 1.4, color: 'var(--text-muted)', textDecoration: 'none' }}
+          >
+            ← Alle Visualisierungen
+          </a>
+        </div>
+      )}
+
+      {/* Controls + Full content */}
+      {(sheetState === 'controls' || sheetState === 'full') && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '0 12px 16px', flex: 1, minHeight: 0 }}>
+
+          {/* District focus — shown at top when a node is selected */}
+          {focusRecord && activeNodeName && (
+            <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
+                <div>
+                  <div style={{ fontSize: 15, color: '#000000', lineHeight: 1.4 }}>{districtLabel(focusRecord.raumbezug)}</div>
+                  <div style={{ fontSize: 10, color: '#000000', letterSpacing: 1.4, marginTop: 3 }}>RANG {focusRank ?? '—'} · {activeYear}</div>
+                </div>
+                <button
+                  onClick={onClearSelection}
+                  style={{ border: '1px solid #000000', background: 'transparent', color: '#000000', fontSize: 10, letterSpacing: 1, padding: '6px 10px', borderRadius: 999, cursor: 'pointer', flexShrink: 0 }}
+                >
+                  LÖSEN
+                </button>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 5, marginTop: 8 }}>
+                <MetricPill label="Aktuell" value={formatValue(focusRecord.indikatorwert)} />
+                <MetricPill label="Vorjahr" value={delta === null ? '—' : formatValue(delta)} />
+                <MetricPill label="Langfr." value={trendAverage === null ? '—' : formatValue(trendAverage)} />
+              </div>
+            </div>
+          )}
+
           {/* Year slider */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
             <input
               type="range"
               min={years[0]}
@@ -110,157 +380,74 @@ export function Sidebar({
               <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[0]}</span>
               <span style={{ fontSize: 9, letterSpacing: 1.2, color: '#000000' }}>{years[years.length - 1]}</span>
             </div>
+            <div style={{ display: 'flex', gap: 6 }}>
+              {(['deutsch', 'nichtdeutsch'] as const).map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => onCategoryChange(cat)}
+                  aria-pressed={activeCategory === cat}
+                  aria-label={cat === 'deutsch' ? 'Deutsch' : 'Nichtdeutsch'}
+                  style={{
+                    flex: 1,
+                    background: activeCategory === cat ? '#000000' : 'transparent',
+                    border: '1px solid #000000',
+                    color: activeCategory === cat ? '#ffffff' : '#000000',
+                    fontSize: 9,
+                    letterSpacing: 1,
+                    padding: '9px 10px',
+                    cursor: 'pointer',
+                    borderRadius: 999,
+                    fontFamily: 'var(--font-serif)',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {cat === 'deutsch' ? 'DEUTSCH' : 'NICHT-DEUTSCH'}
+                </button>
+              ))}
+            </div>
           </div>
-          {/* Category toggle */}
-          <div style={{ display: 'flex', gap: 6 }}>
-            {(['deutsch', 'nichtdeutsch'] as const).map(cat => (
-              <button
-                key={cat}
-                onClick={() => onCategoryChange(cat)}
-                aria-pressed={activeCategory === cat}
-                style={{
-                  flex: 1,
-                  background: activeCategory === cat ? '#000000' : 'transparent',
-                  border: '1px solid #000000',
-                  color: activeCategory === cat ? '#ffffff' : '#000000',
-                  fontSize: 9,
-                  letterSpacing: 1,
-                  padding: '5px 6px',
-                  cursor: 'pointer',
-                  borderRadius: 999,
-                  fontFamily: 'var(--font-serif)',
-                  transition: 'all 0.2s',
-                }}
-              >
-                {cat === 'deutsch' ? 'DEUTSCH' : 'NICHTDEUTSCH'}
-              </button>
+
+          {/* KPI grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5 }}>
+            <KpiCard label="Top Plus" value={strongestInflow ? formatValue(strongestInflow.indikatorwert) : '—'} accent="var(--accent-green)" detail={strongestInflow ? districtLabel(strongestInflow.raumbezug) : '—'} note="Saldo je 1.000 Ew." />
+            <KpiCard label="Top Minus" value={strongestOutflow ? formatValue(strongestOutflow.indikatorwert) : '—'} accent="var(--accent-orange)" detail={strongestOutflow ? districtLabel(strongestOutflow.raumbezug) : '—'} note="Saldo je 1.000 Ew." />
+            <KpiCard label="Im Plus" value={`${positives}/${records.length}`} accent="var(--text-contrast)" detail={`${negatives} im Minus`} note="Bezirke" />
+            <KpiCard label="Schnitt" value={formatValue(average)} accent="var(--accent-blue)" detail="Saldo je 1.000 Ew." note="Normiert" />
+          </div>
+        </div>
+      )}
+
+      {/* Full-only content */}
+      {sheetState === 'full' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '0 12px 20px' }}>
+          {focusRecord && (
+            <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px' }}>
+              <div style={{ fontSize: 10, letterSpacing: 1.2, color: '#000000', marginBottom: 6 }}>TREND · {districtLabel(focusRecord.raumbezug)}</div>
+              <TrendSparkline values={focusTrend.map(p => p.indikatorwert)} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 10, color: '#000000', letterSpacing: 1.2 }}>
+                <span>{focusTrend[0]?.jahr ?? activeYear}</span>
+                <span>{focusTrend[focusTrend.length - 1]?.jahr ?? activeYear}</span>
+              </div>
+            </div>
+          )}
+
+          <div style={{ background: '#ffffff', border: '1px solid #000000', padding: '10px 12px' }}>
+            <div style={{ fontSize: 10, letterSpacing: 1.2, color: '#000000', marginBottom: 8 }}>KONTRASTE</div>
+            {contrastPairs.map(pair => (
+              <div key={`${pair.positive.raumbezug}-${pair.negative.raumbezug}`} style={{ display: 'grid', gap: 3, padding: '6px 0', borderBottom: '1px solid var(--border-quiet)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'baseline' }}>
+                  <span style={{ color: 'var(--accent-green)', fontSize: 12 }}>{districtLabel(pair.positive.raumbezug)}</span>
+                  <span style={{ color: 'var(--accent-orange)', fontSize: 12, textAlign: 'right' }}>{districtLabel(pair.negative.raumbezug)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 11 }}>
+                  <span style={{ color: 'var(--accent-green)' }}>{formatValue(pair.positive.indikatorwert)}</span>
+                  <span style={{ color: 'var(--accent-orange)' }}>{formatValue(pair.negative.indikatorwert)}</span>
+                </div>
+              </div>
             ))}
           </div>
         </div>
-      </SectionCard>
-
-      <SectionCard title="Legende">
-        <LegendRow color="var(--accent-green)" description="Positiver Saldo" />
-        <LegendRow color="var(--accent-orange)" description="Negativer Saldo" />
-        <LegendRow color="var(--text-contrast)" description="Kontrast-Linien" shape="line" />
-        <LegendRow color="var(--text-primary)" description="Größe = Intensität" shape="rings" />
-      </SectionCard>
-
-
-<SectionCard title="Lagebild">
-        <KpiGrid>
-          <KpiCard
-            label="Top Plus"
-            value={strongestInflow ? formatValue(strongestInflow.indikatorwert) : '—'}
-            accent="var(--accent-green)"
-            detail={strongestInflow ? districtLabel(strongestInflow.raumbezug) : 'Keine positive Ausprägung'}
-            note="Saldo je 1.000 Ew."
-          />
-          <KpiCard
-            label="Top Minus"
-            value={strongestOutflow ? formatValue(strongestOutflow.indikatorwert) : '—'}
-            accent="var(--accent-orange)"
-            detail={strongestOutflow ? districtLabel(strongestOutflow.raumbezug) : 'Keine negative Ausprägung'}
-            note="Saldo je 1.000 Ew."
-          />
-          <KpiCard
-            label="Im Plus"
-            value={`${positives}/${records.length}`}
-            accent="var(--text-contrast)"
-            detail={`${negatives} Bezirke im Minus`}
-            note="Anzahl Bezirke"
-          />
-          <KpiCard
-            label="Durchschnitt"
-            value={formatValue(average)}
-            accent="var(--accent-blue)"
-            detail="Saldo je 1.000 Ew."
-            note="Normierter Kennwert"
-          />
-        </KpiGrid>
-      </SectionCard>
-
-      {focusRecord && (
-        <SectionCard title={activeNodeName ? 'Bezirk im Fokus' : 'Spotlight'}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' }}>
-            <div>
-              <div style={{ fontSize: 16, color: '#000000', lineHeight: 1.4 }}>
-                {districtLabel(focusRecord.raumbezug)}
-              </div>
-              <div style={{ fontSize: 10, color: '#000000', letterSpacing: 1.6, marginTop: 5 }}>
-                RANG {focusRank ?? '—'} IM JAHR {activeYear}
-              </div>
-            </div>
-            {activeNodeName && (
-              <button
-                onClick={onClearSelection}
-                style={{
-                  border: '1px solid #000000',
-                  background: 'transparent',
-                  color: '#000000',
-                  fontSize: 10,
-                  letterSpacing: 1,
-                  padding: '6px 10px',
-                  borderRadius: 999,
-                  cursor: 'pointer',
-                }}
-              >
-                LÖSEN
-              </button>
-            )}
-          </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-              gap: 6,
-              marginTop: 8,
-            }}
-          >
-            <MetricPill label="Aktuell" value={formatValue(focusRecord.indikatorwert)} />
-            <MetricPill label="Zum Vorjahr" value={delta === null ? '—' : formatValue(delta)} />
-            <MetricPill label="Langfr. Schnitt" value={trendAverage === null ? '—' : formatValue(trendAverage)} />
-          </div>
-
-          <div style={{ marginTop: 10 }}>
-            <TrendSparkline values={focusTrend.map(point => point.indikatorwert)} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 10, color: '#000000', letterSpacing: 1.2 }}>
-              <span>{focusTrend[0]?.jahr ?? activeYear}</span>
-              <span>{focusTrend[focusTrend.length - 1]?.jahr ?? activeYear}</span>
-            </div>
-          </div>
-        </SectionCard>
       )}
-
-      <SectionCard title={activeNodeName ? 'Kontrastlinien' : 'Prägende Kontraste'} defaultOpen={false}>
-        <div style={{ display: 'grid', gap: 2 }}>
-          {contrastPairs.map(pair => (
-            <div
-              key={`${pair.positive.raumbezug}-${pair.negative.raumbezug}`}
-              style={{
-                display: 'grid',
-                gap: 3,
-                padding: '8px 0',
-                borderBottom: '1px solid var(--border-quiet)',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'baseline' }}>
-                <span style={{ color: 'var(--accent-green)', fontSize: 12, lineHeight: 1.5 }}>
-                  {districtLabel(pair.positive.raumbezug)}
-                </span>
-                <span style={{ color: 'var(--accent-orange)', fontSize: 12, lineHeight: 1.5, textAlign: 'right' }}>
-                  {districtLabel(pair.negative.raumbezug)}
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 11 }}>
-                <span style={{ color: 'var(--accent-green)' }}>{formatValue(pair.positive.indikatorwert)}</span>
-                <span style={{ color: 'var(--accent-orange)' }}>{formatValue(pair.negative.indikatorwert)}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </SectionCard>
     </aside>
   )
 }
